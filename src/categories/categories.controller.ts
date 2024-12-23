@@ -6,10 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @Controller('categories')
 export class CategoriesController {
@@ -21,8 +29,12 @@ export class CategoriesController {
   }
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
+  async findAll(@Query() query) {
+    return await this.categoriesService.findAll(query);
   }
 
   @Get(':id')

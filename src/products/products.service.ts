@@ -12,10 +12,10 @@ import { ProductDto } from './dto/product.dto';
 @Injectable()
 export class ProductsService {
   constructor(
-  @InjectRepository(Product)
-  private productRepository: Repository<Product>,
-  @InjectMapper() private readonly classMapper: Mapper,
-  ){}
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
+    @InjectMapper() private readonly classMapper: Mapper,
+  ) {}
 
   async mapOptions(query: any) {
     const { search, page, per_page, orders, all } = query;
@@ -34,7 +34,7 @@ export class ProductsService {
     }
     return options;
   }
-  
+
   create(createProductDto: CreateProductDto) {
     return 'This action adds a new product';
   }
@@ -46,7 +46,11 @@ export class ProductsService {
       const total = await this.productRepository.count(options);
       const data = await this.productRepository.find(options);
 
-      const result = await this.classMapper.mapArrayAsync(data, Product, ProductDto);
+      const result = await this.classMapper.mapArrayAsync(
+        data,
+        Product,
+        ProductDto,
+      );
       return {
         data: result,
         page,

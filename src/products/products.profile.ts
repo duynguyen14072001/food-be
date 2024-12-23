@@ -5,7 +5,7 @@ import { Product } from './entities/product.entity';
 import { ProductDto } from './dto/product.dto';
 
 @Injectable()
-export class ProductProfile extends AutomapperProfile {
+export class ProductsProfile extends AutomapperProfile {
   constructor(@InjectMapper() mapper: Mapper) {
     super(mapper);
   }

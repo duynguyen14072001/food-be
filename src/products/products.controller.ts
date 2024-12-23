@@ -13,7 +13,11 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductsController {
