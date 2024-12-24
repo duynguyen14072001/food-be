@@ -35,8 +35,15 @@ export class CategoriesService {
     return options;
   }
 
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryDto> {
+    try {
+      const createData = this.categoryRepository.create(createCategoryDto);
+      const data = await this.categoryRepository.save(createData);
+
+      return await this.classMapper.mapAsync(data, Category, CategoryDto);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async findAll(query: any): Promise<ResponseList> {
