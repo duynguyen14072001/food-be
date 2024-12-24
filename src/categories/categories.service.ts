@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
@@ -69,12 +69,29 @@ export class CategoriesService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOneByID(id: number): Promise<CategoryDto> {
+    const data = await this.categoryRepository.findOneBy({ id });
+    return await this.classMapper.mapAsync(data, Category, CategoryDto);
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<CategoryDto> {
+    try {
+      const data = await this.categoryRepository.findOne({
+        where: { id },
+      });
+      if (!data) {
+        throw new NotFoundException(`Could not find Category with id: ${id}`);
+      }
+      const newData = await this.categoryRepository.create({
+        ...data,
+        ...updateCategoryDto,
+      });
+      await this.categoryRepository.update({ id }, newData);
+
+      return await this.classMapper.mapAsync(newData, Category, CategoryDto);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   remove(id: number) {
