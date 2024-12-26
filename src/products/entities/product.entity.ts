@@ -5,9 +5,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ProductCategory } from './product-category.entity';
 
 @Entity({ schema: 'public', name: 'products' })
 export class Product {
@@ -30,8 +33,8 @@ export class Product {
   image_url: string;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'text',
+    nullable: true,
   })
   @AutoMap()
   description: string;
@@ -60,4 +63,11 @@ export class Product {
   updatedDate() {
     this.updated_at = new Date();
   }
+
+  @OneToMany(
+    () => ProductCategory,
+    (productCategory) => productCategory.product,
+  )
+  @JoinColumn({ name: 'product_id' })
+  productCategories: ProductCategory[];
 }

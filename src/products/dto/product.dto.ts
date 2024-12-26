@@ -28,4 +28,8 @@ export class ProductDto {
   @ApiProperty()
   @IsNotEmpty()
   price: number;
+
+  @ApiProperty()
+  @AutoMap()
+  category_id: number[];
 }

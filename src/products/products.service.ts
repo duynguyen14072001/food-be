@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { ProductCategoryService } from './product-category.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { ResponseList } from './dto/product.res';
@@ -15,6 +16,8 @@ export class ProductsService {
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
     @InjectMapper() private readonly classMapper: Mapper,
+    private dataSource: DataSource,
+    private productCategoryService: ProductCategoryService,
   ) {}
 
   async mapOptions(query: any) {
@@ -27,6 +30,11 @@ export class ProductsService {
     const options = {
       order: orderMap,
       where: {},
+      relations: {
+        productCategories: {
+          category: true,
+        },
+      },
     };
     if (!all && page && per_page) {
       options['skip'] = (page - 1) * per_page;
@@ -35,8 +43,31 @@ export class ProductsService {
     return options;
   }
 
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  async create(createProductDto: CreateProductDto): Promise<ProductDto> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const { category_id, ...createData } = createProductDto;
+
+      // Insert product
+      const createProduct = this.productRepository.create(createData);
+      const data = await this.productRepository.save(createProduct);
+
+      // Insert product_category
+      await this.productCategoryService.create(
+        +data.id,
+        category_id.map(Number),
+      );
+
+      await queryRunner.commitTransaction();
+      return await this.classMapper.mapAsync(data, Product, ProductDto);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error.message);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findAll(query: any): Promise<ResponseList> {
@@ -62,12 +93,48 @@ export class ProductsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOneByID(id: number): Promise<ProductDto> {
+    try {
+      const data = await this.productRepository.findOne({
+        where: { id },
+        relations: {
+          productCategories: {
+            category: true,
+          },
+        },
+      });
+
+      if (!data) {
+        throw new NotFoundException(`Could not find Product with id: ${id}`);
+      }
+      return await this.classMapper.mapAsync(data, Product, ProductDto);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto): Promise<ProductDto> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const { category_id, ...updateData } = updateProductDto;
+
+      // Update product
+      const newData = await this.productRepository.create({ ...updateData });
+      await this.productRepository.update({ id }, newData);
+
+      // Upsert product_category
+      await this.productCategoryService.update(+id, category_id.map(Number));
+
+      await queryRunner.commitTransaction();
+      return await this.findOneByID(id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error.message);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   remove(id: number) {

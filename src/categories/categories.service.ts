@@ -74,7 +74,10 @@ export class CategoriesService {
     return await this.classMapper.mapAsync(data, Category, CategoryDto);
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<CategoryDto> {
+  async update(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<CategoryDto> {
     try {
       const data = await this.categoryRepository.findOne({
         where: { id },

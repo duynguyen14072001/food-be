@@ -1,10 +1,13 @@
 import { AutoMap } from '@automapper/classes';
+import { ProductCategory } from 'src/products/entities/product-category.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -40,4 +43,12 @@ export class Category {
   updatedDate() {
     this.updated_at = new Date();
   }
+
+  @AutoMap(() => ProductCategory)
+  @OneToMany(
+    () => ProductCategory,
+    (productCategory) => productCategory.category,
+  )
+  @JoinColumn({ name: 'category_id' })
+  productCategories: ProductCategory[];
 }

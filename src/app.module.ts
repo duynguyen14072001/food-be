@@ -11,6 +11,7 @@ import aws from './config/aws';
 import { LoggerMiddleware } from './logger.middleware';
 import { AdminsApp } from './admins/admins-app.module';
 import { UsersModule } from './users/users.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UsersModule } from './users/users.module';
     }),
     AdminsApp,
     UsersModule,
+    UploadsModule,
   ],
   providers: [AppService],
 })
