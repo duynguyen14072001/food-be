@@ -94,7 +94,11 @@ export class CategoriesService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(ids: number[] | number) {
+    try {
+      return await this.categoryRepository.delete(ids);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }
