@@ -5,6 +5,7 @@ import { RouterModule } from '@nestjs/core';
 import { ProductsModule } from 'src/products/products.module';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { CodesModule } from 'src/codes/codes.module';
+import { UploadsModule } from 'src/uploads/uploads.module';
 
 @Module({
   imports: [
@@ -33,6 +34,10 @@ import { CodesModule } from 'src/codes/codes.module';
       {
         path: 'admins',
         module: CodesModule,
+      },
+      {
+        path: 'admins',
+        module: UploadsModule,
       },
     ]),
   ],

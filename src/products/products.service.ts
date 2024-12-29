@@ -113,7 +113,10 @@ export class ProductsService {
     }
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto): Promise<ProductDto> {
+  async update(
+    id: number,
+    updateProductDto: UpdateProductDto,
+  ): Promise<ProductDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
