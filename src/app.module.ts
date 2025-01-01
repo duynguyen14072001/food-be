@@ -10,8 +10,8 @@ import typeorm from './config/typeorm';
 import aws from './config/aws';
 import { LoggerMiddleware } from './logger.middleware';
 import { AdminsApp } from './admins/admins-app.module';
-import { UsersModule } from './users/users.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { UsersApp } from './users/users-app.module';
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ import { UploadsModule } from './uploads/uploads.module';
       rootPath: join(__dirname, '..', 'public'),
     }),
     AdminsApp,
-    UsersModule,
+    UsersApp,
     UploadsModule,
   ],
   providers: [AppService],
