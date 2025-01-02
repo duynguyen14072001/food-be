@@ -6,6 +6,7 @@ import { ProductsModule } from 'src/products/products.module';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { CodesModule } from 'src/codes/codes.module';
 import { UploadsModule } from 'src/uploads/uploads.module';
+import { UsersModule } from 'src/users/users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +15,8 @@ import { UploadsModule } from 'src/uploads/uploads.module';
     ProductsModule,
     CategoriesModule,
     CodesModule,
+    UploadsModule,
+    UsersModule,
     RouterModule.register([
       {
         path: 'admins',
@@ -38,6 +41,10 @@ import { UploadsModule } from 'src/uploads/uploads.module';
       {
         path: 'admins',
         module: UploadsModule,
+      },
+      {
+        path: 'admins',
+        module: UsersModule,
       },
     ]),
   ],

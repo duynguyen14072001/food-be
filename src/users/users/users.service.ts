@@ -8,6 +8,7 @@ import { MailService } from 'src/mailers/mailers.service';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { UserDto } from './dto/user.dto';
+import { ResponseList } from './dto/user.res';
 
 @Injectable()
 export class UsersService {
@@ -18,12 +19,45 @@ export class UsersService {
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
 
+  async mapOptions(query: any) {
+    const { search, page, per_page, orders, all } = query;
+    const orderMap = orders?.reduce(function (result, item) {
+      result[item['key']] = item['dir'];
+      return result;
+    }, {});
+
+    const options = {
+      order: orderMap,
+      where: {},
+    };
+    if (!all && page && per_page) {
+      options['skip'] = (page - 1) * per_page;
+      options['take'] = per_page;
+    }
+    return options;
+  }
+
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(query: any): Promise<ResponseList> {
+    try {
+      const { page, per_page: perPage } = query;
+      const options = await this.mapOptions(query);
+      const total = await this.userRepository.count(options);
+      const data = await this.userRepository.find(options);
+
+      const result = await this.classMapper.mapArrayAsync(data, User, UserDto);
+      return {
+        data: result,
+        page,
+        perPage,
+        total,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   findOne(id: number) {

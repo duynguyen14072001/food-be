@@ -7,10 +7,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeorm from './config/typeorm';
-import aws from './config/aws';
 import { LoggerMiddleware } from './logger.middleware';
 import { AdminsApp } from './admins/admins-app.module';
-import { UploadsModule } from './uploads/uploads.module';
 import { UsersApp } from './users/users-app.module';
 
 @Module({
@@ -18,7 +16,7 @@ import { UsersApp } from './users/users-app.module';
     ConfigModule.forRoot({
       envFilePath: ['.env', '.env.production'],
       isGlobal: true,
-      load: [typeorm, aws],
+      load: [typeorm],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -34,7 +32,6 @@ import { UsersApp } from './users/users-app.module';
     }),
     AdminsApp,
     UsersApp,
-    UploadsModule,
   ],
   providers: [AppService],
 })

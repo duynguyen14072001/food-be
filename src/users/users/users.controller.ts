@@ -6,10 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -21,8 +29,12 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
+  async findAll(@Query() query) {
+    return await this.usersService.findAll(query);
   }
 
   @Get(':id')
