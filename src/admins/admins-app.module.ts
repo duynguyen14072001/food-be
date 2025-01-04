@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AdminsModule } from './admins/admins.module';
 import { AuthModule } from './auth/auth.module';
 import { RouterModule } from '@nestjs/core';
-import { ProductsModule } from 'src/products/products.module';
+// import { ProductsModule } from 'src/products/products.module';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { CodesModule } from 'src/codes/codes.module';
 import { UploadsModule } from 'src/uploads/uploads.module';
@@ -12,7 +12,7 @@ import { UsersModule } from 'src/users/users/users.module';
   imports: [
     AdminsModule,
     AuthModule,
-    ProductsModule,
+    // ProductsModule,
     CategoriesModule,
     CodesModule,
     UploadsModule,
@@ -26,10 +26,10 @@ import { UsersModule } from 'src/users/users/users.module';
         path: 'admins',
         module: AuthModule,
       },
-      {
-        path: 'admins',
-        module: ProductsModule,
-      },
+      // {
+      //   path: 'admins',
+      //   module: ProductsModule,
+      // },
       {
         path: 'admins',
         module: CategoriesModule,
