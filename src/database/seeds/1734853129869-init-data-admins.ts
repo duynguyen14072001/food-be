@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { config as dotenvConfig } from 'dotenv';
 import { Seeder } from 'typeorm-extension';
-import { Admin } from 'src/admins/admins/entities/admin.entity';
+import { Admin } from '../../admins/admins/entities/admin.entity';
 import * as argon2 from 'argon2';
 
 dotenvConfig({ path: '.env' });

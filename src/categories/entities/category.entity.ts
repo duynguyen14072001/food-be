@@ -1,5 +1,5 @@
 import { AutoMap } from '@automapper/classes';
-import { ProductCategory } from 'src/products/entities/product-category.entity';
+import { ProductCategory } from '../../products/entities/product-category.entity';
 import {
   BeforeInsert,
   BeforeUpdate,

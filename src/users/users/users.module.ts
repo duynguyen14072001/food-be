@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { MailService } from 'src/mailers/mailers.service';
+import { MailService } from '../../mailers/mailers.service';
 import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MailsModule } from 'src/mailers/mailers.module';
+import { MailsModule } from '../../mailers/mailers.module';
 import { UserProfile } from './users.profile';
 
 @Module({

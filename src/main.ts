@@ -8,9 +8,13 @@ import {
 } from '@nestjs/common';
 import { ResponseInterceptor } from './ResponseInterceptor';
 import { useContainer, ValidationError } from 'class-validator';
+import express from 'express';
+import { ExpressAdapter } from '@nestjs/platform-express';
+
+const server = express();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   app.enableCors({
     allowedHeaders: '*',
@@ -84,3 +88,4 @@ async function bootstrap() {
   await app.listen(3003);
 }
 bootstrap();
+export default server;

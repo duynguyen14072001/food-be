@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { EXPIRED_IN_TOKEN } from 'src/password-reset-tokens/entity/password-reset-token.entity';
+import { EXPIRED_IN_TOKEN } from '../../password-reset-tokens/entity/password-reset-token.entity';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
