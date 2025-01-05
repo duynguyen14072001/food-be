@@ -1,3 +1,4 @@
+import { RouterModule } from '@nestjs/core';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AutomapperModule } from '@automapper/nestjs';
@@ -32,6 +33,16 @@ import { UsersApp } from './users/users-app.module';
     }),
     AdminsApp,
     UsersApp,
+    RouterModule.register([
+      {
+        path: 'admins',
+        module: AdminsApp,
+      },
+      {
+        path: 'users',
+        module: UsersApp,
+      },
+    ]),
   ],
   providers: [AppService],
 })

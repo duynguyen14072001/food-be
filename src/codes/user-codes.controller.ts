@@ -12,7 +12,7 @@ import { CreateCodeDto } from './dto/create-code.dto';
 import { UpdateCodeDto } from './dto/update-code.dto';
 
 @Controller('codes')
-export class CodesController {
+export class UserCodesController {
   constructor(private readonly codesService: CodesService) {}
 
   @Post()

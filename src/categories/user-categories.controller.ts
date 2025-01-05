@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 
 @Controller('categories')
-export class CategoriesController {
+export class UserCategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
