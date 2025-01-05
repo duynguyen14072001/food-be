@@ -1,4 +1,5 @@
 import { AutoMap } from '@automapper/classes';
+import { User } from '../../users/users/entities/user.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -6,45 +7,40 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ProductCategory } from './product-category.entity';
-import { OrderDetail } from '../../orders/entities/order-detail.entity';
+import { OrderDetail } from './order-detail.entity';
 
-@Entity({ schema: 'public', name: 'products' })
-export class Product {
+@Entity({ schema: 'public', name: 'orders' })
+export class Order {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   @AutoMap()
   id: number;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'bigint',
   })
   @AutoMap()
-  name: string;
+  user_id: number;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'tinyint',
   })
   @AutoMap()
-  image_url: string;
+  status: number;
 
   @Column({
     type: 'text',
-    nullable: true,
   })
   @AutoMap()
-  description: string;
+  shipping_address: string;
 
-  @Column({
-    type: 'float',
-  })
+  @Column({ type: 'timestamp', nullable: true })
   @AutoMap()
-  price: number;
+  order_date: Date;
 
   @CreateDateColumn()
   @AutoMap()
@@ -65,14 +61,11 @@ export class Product {
     this.updated_at = new Date();
   }
 
-  @OneToMany(
-    () => ProductCategory,
-    (productCategory) => productCategory.product,
-  )
-  @JoinColumn({ name: 'product_id' })
-  productCategories: ProductCategory[];
+  @ManyToOne(() => User, (user) => user.orders)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
-  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
-  @JoinColumn({ name: 'product_id' })
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
+  @JoinColumn({ name: 'order_id' })
   orderDetails: OrderDetail[];
 }

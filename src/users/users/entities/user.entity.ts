@@ -1,10 +1,13 @@
 import { AutoMap } from '@automapper/classes';
+import { Order } from '../../../orders/entities/order.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -62,4 +65,9 @@ export class User {
   updatedDate() {
     this.updated_at = new Date();
   }
+
+  @AutoMap(() => Order)
+  @OneToMany(() => Order, (order) => order.user)
+  @JoinColumn({ name: 'user_id' })
+  orders: Order[];
 }
