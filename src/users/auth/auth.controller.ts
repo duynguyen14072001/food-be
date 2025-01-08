@@ -21,6 +21,7 @@ import { AuthService } from './auth.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { SignupDto } from './dto/signup.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -37,6 +38,18 @@ export class AuthController {
   @ApiBadRequestResponse()
   signIn(@Body() loginDto: LoginDto): Promise<LoginRes> {
     return this.authService.signIn(loginDto.mail_address, loginDto.password);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('signup')
+  @ApiOkResponse({
+    type: LoginRes,
+  })
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  signUp(@Body() signupDto: SignupDto): Promise<any> {
+    return this.authService.signUp(signupDto);
   }
 
   @Patch('change-password')

@@ -37,8 +37,15 @@ export class UsersService {
     return options;
   }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto): Promise<UserDto> {
+    try {
+      const createData = this.userRepository.create(createUserDto);
+      const data = await this.userRepository.save(createData);
+
+      return await this.classMapper.mapAsync(data, User, UserDto);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async findAll(query: any): Promise<ResponseList> {

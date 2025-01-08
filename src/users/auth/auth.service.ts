@@ -47,6 +47,10 @@ export class AuthService {
     };
   }
 
+  async signUp(payload: any): Promise<any> {
+    return await this.usersService.create(payload);
+  }
+
   async changePassword(user: any, changePasswordDto: ChangePasswordDto) {
     const userData = await this.usersService.findOneByEmail(user.mail_address);
 
