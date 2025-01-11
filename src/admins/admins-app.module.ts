@@ -25,6 +25,12 @@ import { Order } from '../orders/entities/order.entity';
 import { AdminOrdersController } from '../orders/admin-orders.controller';
 import { OrdersProfile } from '../orders/orders.profile';
 import { OrdersService } from '../orders/orders.service';
+import { UploadsService } from '../uploads/uploads.service';
+import { Banner } from '../banners/entities/banner.entity';
+import { AdminBannersController } from '../banners/admin-banners.controller';
+import { BannersService } from '../banners/banners.service';
+import { File } from '../uploads/entities/upload.entity';
+import { UploadsCloudinaryService } from '../uploads/uploads-cloudinary.service';
 
 @Module({
   imports: [
@@ -36,6 +42,8 @@ import { OrdersService } from '../orders/orders.service';
       ProductCategory,
       Order,
       OrderDetail,
+      Banner,
+      File,
     ]),
     AuthModule,
     RouterModule.register([
@@ -51,6 +59,7 @@ import { OrdersService } from '../orders/orders.service';
     AdminProductsController,
     AdminUsersController,
     AdminOrdersController,
+    AdminBannersController,
   ],
   providers: [
     CategoriesService,
@@ -64,6 +73,9 @@ import { OrdersService } from '../orders/orders.service';
     CategoriesProfile,
     UserProfile,
     OrdersProfile,
+    UploadsService,
+    UploadsCloudinaryService,
+    BannersService,
   ],
 })
 export class AdminsApp {}

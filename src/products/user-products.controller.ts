@@ -7,7 +7,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { Public } from 'src/users/auth/public.decorator';
+import { Public } from '../users/auth/public.decorator';
 
 @Controller('products')
 export class UserProductsController {
