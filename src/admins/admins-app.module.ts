@@ -31,6 +31,7 @@ import { AdminBannersController } from '../banners/admin-banners.controller';
 import { BannersService } from '../banners/banners.service';
 import { File } from '../uploads/entities/upload.entity';
 import { UploadsCloudinaryService } from '../uploads/uploads-cloudinary.service';
+import { UploadsModule } from '../uploads/uploads.module';
 
 @Module({
   imports: [
@@ -46,10 +47,15 @@ import { UploadsCloudinaryService } from '../uploads/uploads-cloudinary.service'
       File,
     ]),
     AuthModule,
+    UploadsModule,
     RouterModule.register([
       {
         path: 'admins',
         module: AuthModule,
+      },
+      {
+        path: 'admins',
+        module: UploadsModule,
       },
     ]),
   ],
