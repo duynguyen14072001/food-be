@@ -32,6 +32,11 @@ import { BannersService } from '../banners/banners.service';
 import { File } from '../uploads/entities/upload.entity';
 import { UploadsCloudinaryService } from '../uploads/uploads-cloudinary.service';
 import { UploadsModule } from '../uploads/uploads.module';
+import { BannersProfile } from 'src/banners/banners.profile';
+import { AdminFaqsController } from 'src/faqs/admin-faqs.controller';
+import { Faq } from 'src/faqs/entities/faq.entity';
+import { FaqsProfile } from 'src/faqs/faqs.profile';
+import { FaqsService } from 'src/faqs/faqs.service';
 
 @Module({
   imports: [
@@ -45,6 +50,7 @@ import { UploadsModule } from '../uploads/uploads.module';
       OrderDetail,
       Banner,
       File,
+      Faq,
     ]),
     AuthModule,
     UploadsModule,
@@ -66,6 +72,7 @@ import { UploadsModule } from '../uploads/uploads.module';
     AdminUsersController,
     AdminOrdersController,
     AdminBannersController,
+    AdminFaqsController,
   ],
   providers: [
     CategoriesService,
@@ -82,6 +89,9 @@ import { UploadsModule } from '../uploads/uploads.module';
     UploadsService,
     UploadsCloudinaryService,
     BannersService,
+    BannersProfile,
+    FaqsProfile,
+    FaqsService,
   ],
 })
 export class AdminsApp {}

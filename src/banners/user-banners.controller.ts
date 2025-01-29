@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { BannersService } from './banners.service';
 import { Public } from '../users/auth/public.decorator';
 
@@ -8,6 +8,7 @@ export class UserBannersController {
 
   @Get()
   @Public()
+  @HttpCode(HttpStatus.OK)
   async findAll(@Query() query) {
     return await this.bannersService.findAll(query);
   }

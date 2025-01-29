@@ -8,7 +8,7 @@ import { UploadsService } from '../uploads/uploads.service';
 import { CreateBannerListDto } from './dto/create-banner.dto';
 import { BannerDto } from './dto/banner.dto';
 import { ResponseList } from './dto/banner.res';
-import { getIds } from './public.decorator';
+import { getIds } from 'src/helper';
 
 @Injectable()
 export class BannersService {
@@ -63,7 +63,6 @@ export class BannersService {
       // await this.uploadService.removeFile(fileNames);
       // // Update updated_at imgs
       // await this.uploadService.updateUpdatedAt(fileNamesNew, 'file');
-
       await this.bannerRepository.upsert(createListBannerDto.banners, ['id']);
       return true;
     } catch (error) {

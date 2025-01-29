@@ -9,8 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ schema: 'public', name: 'banners' })
-export class Banner {
+@Entity({ schema: 'public', name: 'faqs' })
+export class Faq {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   @AutoMap()
   id: number;
@@ -20,7 +20,14 @@ export class Banner {
     length: 255,
   })
   @AutoMap()
-  image_url: string;
+  question: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  @AutoMap()
+  answer: string;
 
   @Column({
     type: 'int',
