@@ -46,6 +46,7 @@ export class FaqsService {
     });
     const deleteIds = await getIds(bannerDeletes);
     deleteIds.length && (await this.faqRepository.delete(deleteIds));
+    await this.faqRepository.upsert(createFaqListDto.faqs, ['id']);
     return true;
   }
 
