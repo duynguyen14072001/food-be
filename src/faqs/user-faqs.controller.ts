@@ -3,7 +3,7 @@ import { FaqsService } from './faqs.service';
 import { Public } from 'src/admins/auth/public.decorator';
 
 @Controller('faqs')
-export class FaqsController {
+export class UserFaqsController {
   constructor(private readonly faqsService: FaqsService) {}
 
   @Get()

@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFaqListDto } from './dto/create-faq.dto';
-import { getIds } from 'src/helper';
-import { Faq } from './entities/faq.entity';
-import { In, Not, Repository } from 'typeorm';
+import { CreateRecommendListDto } from './dto/create-recommend.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Mapper } from '@automapper/core';
+import { Recommend } from './entities/recommend.entity';
 import { InjectMapper } from '@automapper/nestjs';
-import { ResponseList } from './dto/faq.res';
-import { FaqDto } from './dto/faq.dto';
+import { Mapper } from '@automapper/core';
+import { In, Not, Repository } from 'typeorm';
+import { ResponseList } from './dto/recommend.res';
+import { RecommendDto } from './dto/recommend.dto';
+import { getIds } from 'src/helper';
 
 @Injectable()
-export class FaqsService {
+export class RecommendsService {
   constructor(
-    @InjectRepository(Faq)
-    private faqRepository: Repository<Faq>,
+    @InjectRepository(Recommend)
+    private recommendRepository: Repository<Recommend>,
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
 
@@ -26,6 +26,9 @@ export class FaqsService {
 
     const options = {
       order: orderMap,
+      relations: {
+        product: true,
+      },
     };
     if (search) {
       options['where'] = {
@@ -39,14 +42,16 @@ export class FaqsService {
     return options;
   }
 
-  async upsert(createFaqListDto: CreateFaqListDto) {
-    const existIds = await getIds(createFaqListDto.faqs);
-    const faqDeletes = await this.faqRepository.findBy({
+  async upsert(createRecommendListDto: CreateRecommendListDto) {
+    const existIds = await getIds(createRecommendListDto.recommends);
+    const recommendDeletes = await this.recommendRepository.findBy({
       id: Not(In(existIds)),
     });
-    const deleteIds = await getIds(faqDeletes);
-    deleteIds.length && (await this.faqRepository.delete(deleteIds));
-    await this.faqRepository.upsert(createFaqListDto.faqs, ['id']);
+    const deleteIds = await getIds(recommendDeletes);
+    deleteIds.length && (await this.recommendRepository.delete(deleteIds));
+    await this.recommendRepository.upsert(createRecommendListDto.recommends, [
+      'id',
+    ]);
     return true;
   }
 
@@ -54,12 +59,11 @@ export class FaqsService {
     try {
       const { page, per_page: perPage } = query;
       const options = await this.mapOptions(query);
-      const total = await this.faqRepository.count(options);
-      const data = await this.faqRepository.find(options);
+      const total = await this.recommendRepository.count(options);
+      const data = await this.recommendRepository.find(options);
 
-      const result = await this.classMapper.mapArrayAsync(data, Faq, FaqDto);
       return {
-        data: result,
+        data: data,
         page,
         perPage,
         total,

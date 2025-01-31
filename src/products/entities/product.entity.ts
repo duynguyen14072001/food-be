@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { ProductCategory } from './product-category.entity';
 import { OrderDetail } from '../../orders/entities/order-detail.entity';
+import { Recommend } from 'src/recommends/entities/recommend.entity';
 
 @Entity({ schema: 'public', name: 'products' })
 export class Product {
@@ -75,4 +76,9 @@ export class Product {
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
   @JoinColumn({ name: 'product_id' })
   orderDetails: OrderDetail[];
+
+  @AutoMap(() => Recommend)
+  @OneToMany(() => Recommend, (recommend) => recommend.product)
+  @JoinColumn({ name: 'product_id' })
+  recommends: Recommend[];
 }

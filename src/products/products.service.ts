@@ -4,7 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Like, Not, Repository } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { ResponseList } from './dto/product.res';
@@ -21,7 +21,7 @@ export class ProductsService {
   ) {}
 
   async mapOptions(query: any) {
-    const { search, page, per_page, orders, all } = query;
+    const { search, page, per_page, orders, filters, all } = query;
     const orderMap = orders?.reduce(function (result, item) {
       result[item['key']] = item['dir'];
       return result;
@@ -36,6 +36,27 @@ export class ProductsService {
         },
       },
     };
+
+    if (search) {
+      options.where = {
+        ...options.where,
+        name: Like(`%${search}%`),
+      };
+    }
+
+    if (filters?.length) {
+      const filterList = filters.filter((item) => item.data);
+      for (const i of filterList) {
+        const { key, data } = i;
+        if (key === 'not_ids') {
+          options.where = {
+            ...options.where,
+            id: Not(In(data)),
+          };
+        }
+      }
+    }
+
     if (!all && page && per_page) {
       options['skip'] = (page - 1) * per_page;
       options['take'] = per_page;

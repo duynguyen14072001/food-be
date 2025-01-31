@@ -37,6 +37,9 @@ import { AdminFaqsController } from 'src/faqs/admin-faqs.controller';
 import { Faq } from 'src/faqs/entities/faq.entity';
 import { FaqsProfile } from 'src/faqs/faqs.profile';
 import { FaqsService } from 'src/faqs/faqs.service';
+import { Recommend } from 'src/recommends/entities/recommend.entity';
+import { AdminRecommendsController } from 'src/recommends/admin-recommends.controller';
+import { RecommendsService } from 'src/recommends/recommends.service';
 
 @Module({
   imports: [
@@ -51,6 +54,7 @@ import { FaqsService } from 'src/faqs/faqs.service';
       Banner,
       File,
       Faq,
+      Recommend,
     ]),
     AuthModule,
     UploadsModule,
@@ -73,6 +77,7 @@ import { FaqsService } from 'src/faqs/faqs.service';
     AdminOrdersController,
     AdminBannersController,
     AdminFaqsController,
+    AdminRecommendsController,
   ],
   providers: [
     CategoriesService,
@@ -92,6 +97,7 @@ import { FaqsService } from 'src/faqs/faqs.service';
     BannersProfile,
     FaqsProfile,
     FaqsService,
+    RecommendsService,
   ],
 })
 export class AdminsApp {}

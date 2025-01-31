@@ -16,13 +16,23 @@ import { UploadsCloudinaryService } from '../uploads/uploads-cloudinary.service'
 import { UploadsService } from '../uploads/uploads.service';
 import { File } from '../uploads/entities/upload.entity';
 import { Faq } from 'src/faqs/entities/faq.entity';
-import { FaqsController } from 'src/faqs/user-faqs.controller';
+import { UserFaqsController } from 'src/faqs/user-faqs.controller';
 import { FaqsService } from 'src/faqs/faqs.service';
 import { FaqsProfile } from 'src/faqs/faqs.profile';
+import { Recommend } from 'src/recommends/entities/recommend.entity';
+import { UserRecommendsController } from 'src/recommends/user-recommends.controller';
+import { RecommendsService } from 'src/recommends/recommends.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, ProductCategory, Banner, File, Faq]),
+    TypeOrmModule.forFeature([
+      Product,
+      ProductCategory,
+      Banner,
+      File,
+      Faq,
+      Recommend,
+    ]),
     AuthModule,
     RouterModule.register([
       {
@@ -31,7 +41,12 @@ import { FaqsProfile } from 'src/faqs/faqs.profile';
       },
     ]),
   ],
-  controllers: [UserProductsController, UserBannersController, FaqsController],
+  controllers: [
+    UserProductsController,
+    UserBannersController,
+    UserFaqsController,
+    UserRecommendsController,
+  ],
   providers: [
     ProductsService,
     ProductCategoryService,
@@ -42,6 +57,7 @@ import { FaqsProfile } from 'src/faqs/faqs.profile';
     UploadsCloudinaryService,
     FaqsService,
     FaqsProfile,
+    RecommendsService,
   ],
 })
 export class UsersApp {}
