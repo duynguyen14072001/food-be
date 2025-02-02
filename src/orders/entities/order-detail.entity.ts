@@ -33,6 +33,12 @@ export class OrderDetail {
   @AutoMap()
   quantity: number;
 
+  @Column({
+    type: 'int',
+  })
+  @AutoMap()
+  amount: number;
+
   @ManyToOne(() => Product, (product) => product.orderDetails)
   @JoinColumn({ name: 'product_id' })
   product: Product;

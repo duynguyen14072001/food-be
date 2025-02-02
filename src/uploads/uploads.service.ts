@@ -29,7 +29,25 @@ export class UploadsService {
       size,
     };
 
-    this.fileRepository.save(mapData);
+    await this.fileRepository.save(mapData);
     return result.url;
+  }
+
+  async uploadMultipleFiles(files: Express.Multer.File[], req) {
+    try {
+      const result = await this.uploadsCloudinary.uploadMultipleFiles(
+        files,
+        req.query.type,
+      );
+      await this.fileRepository.insert(
+        result.map((item) => ({
+          ...item,
+          type: req.query.type,
+        })),
+      );
+      return result.map((item) => item.url);
+    } catch (error) {
+      throw new Error(`Upload multiple files failed: ${error.message}`);
+    }
   }
 }

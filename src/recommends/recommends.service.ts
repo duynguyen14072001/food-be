@@ -6,7 +6,6 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { In, Not, Repository } from 'typeorm';
 import { ResponseList } from './dto/recommend.res';
-import { RecommendDto } from './dto/recommend.dto';
 import { getIds } from 'src/helper';
 
 @Injectable()
@@ -27,7 +26,11 @@ export class RecommendsService {
     const options = {
       order: orderMap,
       relations: {
-        product: true,
+        product: {
+          productCategories: {
+            category: true,
+          },
+        },
       },
     };
     if (search) {

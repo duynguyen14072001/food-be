@@ -1,36 +1,35 @@
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
   BeforeInsert,
   BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+import { Product } from './product.entity';
 import { AutoMap } from '@automapper/classes';
 
-export const EXPIRED_IN_TOKEN = 15;
-
-@Entity({ schema: 'public', name: 'password_reset_tokens' })
-export class PasswordResetToken {
+@Entity({ schema: 'public', name: 'product_images' })
+export class ProductImages {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   @AutoMap()
   id: number;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'bigint',
   })
   @AutoMap()
-  mail_address: string;
+  product_id: number;
 
   @Column({
     type: 'varchar',
     length: 255,
-    unique: true,
   })
   @AutoMap()
-  token: string;
+  image_url: string;
 
   @CreateDateColumn()
   @AutoMap()
@@ -50,4 +49,8 @@ export class PasswordResetToken {
   updatedDate() {
     this.updated_at = new Date();
   }
+
+  @ManyToOne(() => Product, (product) => product.productImages)
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
 }

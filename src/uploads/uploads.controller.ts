@@ -9,6 +9,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Req,
+  UploadedFiles,
 } from '@nestjs/common';
 import { UploadsService } from './uploads.service';
 import {
@@ -16,7 +17,7 @@ import {
   ApiBearerAuth,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('uploads')
 export class UploadsController {
@@ -41,5 +42,26 @@ export class UploadsController {
     @Req() req: Request,
   ) {
     return this.uploadsService.uploadFile(file, req);
+  }
+
+  @Post('multiple')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
+  @UseInterceptors(FilesInterceptor('files', 10))
+  uploadMultipleFiles(
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 50 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+        ],
+      }),
+    )
+    files: Express.Multer.File[],
+    @Req() req: Request,
+  ) {
+    return this.uploadsService.uploadMultipleFiles(files, req);
   }
 }

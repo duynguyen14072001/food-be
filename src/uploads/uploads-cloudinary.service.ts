@@ -31,4 +31,50 @@ export class UploadsCloudinaryService {
       throw new Error(`Cloudinary upload failed: ${error.message}`);
     }
   }
+
+  async uploadMultipleFiles(
+    files: Express.Multer.File[],
+    folder?: string,
+  ): Promise<any[]> {
+    try {
+      const uploadResults = await Promise.all(
+        files.map((file) => {
+          return new Promise((resolve, reject) => {
+            const newFileName = `${file.originalname.split('.')[0]}_${Date.now()}`;
+            const params = {
+              folder: folder || '',
+              public_id: newFileName,
+              overwrite: true,
+            };
+
+            const stream = CLOUDINARY.v2.uploader.upload_stream(
+              params,
+              (error, result) => {
+                if (error) {
+                  reject(
+                    new Error(
+                      `Cloudinary upload failed for ${file.originalname}: ${error.message}`,
+                    ),
+                  );
+                } else {
+                  resolve({
+                    url: result.url,
+                    file_name: result.public_id,
+                    mime_type: file.mimetype,
+                    original_name: file.originalname,
+                    size: file.size,
+                  });
+                }
+              },
+            );
+            stream.end(file.buffer);
+          });
+        }),
+      );
+
+      return uploadResults;
+    } catch (error) {
+      throw new Error(`Cloudinary multiple upload failed: ${error.message}`);
+    }
+  }
 }

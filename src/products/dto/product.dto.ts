@@ -16,6 +16,12 @@ export class ProductDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
+  @MaxLength(255)
+  slug: string;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
   description: string;
 
   @AutoMap()
@@ -29,7 +35,16 @@ export class ProductDto {
   @IsNotEmpty()
   price: number;
 
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  show_flag: number;
+
   @ApiProperty()
   @AutoMap()
   category_id: number[];
+
+  @ApiProperty()
+  @AutoMap()
+  image_urls: string[];
 }

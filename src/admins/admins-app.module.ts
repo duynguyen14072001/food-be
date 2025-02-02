@@ -40,6 +40,8 @@ import { FaqsService } from 'src/faqs/faqs.service';
 import { Recommend } from 'src/recommends/entities/recommend.entity';
 import { AdminRecommendsController } from 'src/recommends/admin-recommends.controller';
 import { RecommendsService } from 'src/recommends/recommends.service';
+import { ProductImagesService } from 'src/products/product-images.service';
+import { ProductImages } from 'src/products/entities/product-images.entity';
 
 @Module({
   imports: [
@@ -49,6 +51,7 @@ import { RecommendsService } from 'src/recommends/recommends.service';
       Code,
       Product,
       ProductCategory,
+      ProductImages,
       Order,
       OrderDetail,
       Banner,
@@ -84,6 +87,7 @@ import { RecommendsService } from 'src/recommends/recommends.service';
     CodesService,
     ProductsService,
     ProductCategoryService,
+    ProductImagesService,
     UsersService,
     MailService,
     OrdersService,

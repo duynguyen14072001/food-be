@@ -13,6 +13,8 @@ import {
 import { ProductCategory } from './product-category.entity';
 import { OrderDetail } from '../../orders/entities/order-detail.entity';
 import { Recommend } from 'src/recommends/entities/recommend.entity';
+import { ProductImages } from './product-images.entity';
+import { Cart } from 'src/carts/entities/cart.entity';
 
 @Entity({ schema: 'public', name: 'products' })
 export class Product {
@@ -26,6 +28,14 @@ export class Product {
   })
   @AutoMap()
   name: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    unique: true,
+  })
+  @AutoMap()
+  slug: string;
 
   @Column({
     type: 'varchar',
@@ -46,6 +56,13 @@ export class Product {
   })
   @AutoMap()
   price: number;
+
+  @Column({
+    type: 'tinyint',
+    default: 0,
+  })
+  @AutoMap()
+  show_flag: number;
 
   @CreateDateColumn()
   @AutoMap()
@@ -81,4 +98,12 @@ export class Product {
   @OneToMany(() => Recommend, (recommend) => recommend.product)
   @JoinColumn({ name: 'product_id' })
   recommends: Recommend[];
+
+  @OneToMany(() => ProductImages, (productImages) => productImages.product)
+  @JoinColumn({ name: 'product_id' })
+  productImages: ProductImages[];
+
+  @OneToMany(() => Cart, (cart) => cart.product)
+  @JoinColumn({ name: 'product_id' })
+  carts: Cart[];
 }

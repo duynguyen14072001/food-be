@@ -17,13 +17,13 @@ export class UserProductsController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() query) {
-    return await this.productsService.findAll(query);
+    return await this.productsService.findAllNoMapper(query);
   }
 
   @Public()
-  @Get(':id')
+  @Get(':slug')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: string) {
-    return await this.productsService.findOneByID(+id);
+  async findOne(@Param('slug') slug: string) {
+    return await this.productsService.findOneBySlug(slug);
   }
 }

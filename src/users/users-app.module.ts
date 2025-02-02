@@ -22,16 +22,23 @@ import { FaqsProfile } from 'src/faqs/faqs.profile';
 import { Recommend } from 'src/recommends/entities/recommend.entity';
 import { UserRecommendsController } from 'src/recommends/user-recommends.controller';
 import { RecommendsService } from 'src/recommends/recommends.service';
+import { ProductImages } from 'src/products/entities/product-images.entity';
+import { ProductImagesService } from 'src/products/product-images.service';
+import { Cart } from 'src/carts/entities/cart.entity';
+import { UserCartsController } from 'src/carts/user-carts.controller';
+import { CartsService } from 'src/carts/carts.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Product,
       ProductCategory,
+      ProductImages,
       Banner,
       File,
       Faq,
       Recommend,
+      Cart,
     ]),
     AuthModule,
     RouterModule.register([
@@ -46,10 +53,12 @@ import { RecommendsService } from 'src/recommends/recommends.service';
     UserBannersController,
     UserFaqsController,
     UserRecommendsController,
+    UserCartsController,
   ],
   providers: [
     ProductsService,
     ProductCategoryService,
+    ProductImagesService,
     ProductsProfile,
     BannersProfile,
     BannersService,
@@ -58,6 +67,7 @@ import { RecommendsService } from 'src/recommends/recommends.service';
     FaqsService,
     FaqsProfile,
     RecommendsService,
+    CartsService,
   ],
 })
 export class UsersApp {}

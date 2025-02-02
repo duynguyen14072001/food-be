@@ -28,8 +28,8 @@ export class AdminCategoriesController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    return await this.categoriesService.create(createCategoryDto);
   }
 
   @Get()

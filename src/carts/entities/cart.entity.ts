@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
-import { Order } from '../../../orders/entities/order.entity';
+import { Product } from 'src/products/entities/product.entity';
+import { User } from 'src/users/users/entities/user.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -7,46 +8,34 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Cart } from 'src/carts/entities/cart.entity';
 
-@Entity({ schema: 'public', name: 'users' })
-export class User {
+@Entity({ schema: 'public', name: 'carts' })
+export class Cart {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   @AutoMap()
   id: number;
 
   @Column({
-    type: 'varchar',
-    length: 255,
-    unique: true,
+    type: 'bigint',
   })
   @AutoMap()
-  mail_address: string;
+  product_id: number;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'bigint',
   })
   @AutoMap()
-  name: string;
+  user_id: number;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'int',
   })
   @AutoMap()
-  password: string;
-
-  @Column({
-    type: 'varchar',
-    length: 255,
-  })
-  @AutoMap()
-  phone_number: string;
+  quantity: number;
 
   @CreateDateColumn()
   @AutoMap()
@@ -67,13 +56,11 @@ export class User {
     this.updated_at = new Date();
   }
 
-  @AutoMap(() => Order)
-  @OneToMany(() => Order, (order) => order.user)
-  @JoinColumn({ name: 'user_id' })
-  orders: Order[];
+  @ManyToOne(() => Product, (product) => product.carts)
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
 
-  @AutoMap(() => Cart)
-  @OneToMany(() => Cart, (cart) => cart.user)
+  @ManyToOne(() => User, (user) => user.carts)
   @JoinColumn({ name: 'user_id' })
-  carts: Cart[];
+  user: User;
 }

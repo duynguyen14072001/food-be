@@ -24,6 +24,14 @@ export class ProductsProfile extends AutomapperProfile {
               .map((item) => item.category?.id),
           ),
         ),
+        forMember(
+          (d) => d.image_urls,
+          mapFrom((e) =>
+            e.productImages
+              ?.filter(({ image_url }) => image_url)
+              .map((item) => item.image_url),
+          ),
+        ),
       );
     };
   }
