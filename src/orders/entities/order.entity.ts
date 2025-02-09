@@ -33,14 +33,36 @@ export class Order {
   status: number;
 
   @Column({
-    type: 'text',
+    type: 'varchar',
+    length: 255,
   })
   @AutoMap()
   shipping_address: string;
 
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  @AutoMap()
+  note: string;
+
   @Column({ type: 'timestamp', nullable: true })
   @AutoMap()
   order_date: Date;
+
+  @Column({
+    type: 'tinyint',
+    comment: '1-Thanh toán khi giao hàng, 2-Thanh toán online,',
+  })
+  @AutoMap()
+  payment_method: number;
+
+  @Column({
+    type: 'tinyint',
+    comment: '1-Đã thanh toán, 2-Chưa thanh toán,',
+  })
+  @AutoMap()
+  payment_status: number;
 
   @CreateDateColumn()
   @AutoMap()

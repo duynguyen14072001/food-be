@@ -1,14 +1,10 @@
 import {
   Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
   HttpStatus,
   HttpCode,
-  Query,
+  Post,
+  Body,
+  Request,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import {
@@ -16,17 +12,21 @@ import {
   ApiBearerAuth,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { CreateOrderDetailListDto } from './dto/create-order-detail.dto';
 
 @Controller('orders')
-export class AdminOrdersController {
+export class UserOrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Get()
+  @Post()
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
-  async findAll(@Query() query) {
-    return await this.ordersService.findAll(query);
+  async create(
+    @Request() req,
+    @Body() createOrderDetailDto: CreateOrderDetailListDto,
+  ) {
+    return await this.ordersService.create(createOrderDetailDto, req);
   }
 }

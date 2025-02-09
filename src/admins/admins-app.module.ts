@@ -42,6 +42,7 @@ import { AdminRecommendsController } from 'src/recommends/admin-recommends.contr
 import { RecommendsService } from 'src/recommends/recommends.service';
 import { ProductImagesService } from 'src/products/product-images.service';
 import { ProductImages } from 'src/products/entities/product-images.entity';
+import { OrderDetailsService } from 'src/orders/order-details.service';
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { ProductImages } from 'src/products/entities/product-images.entity';
     UsersService,
     MailService,
     OrdersService,
+    OrderDetailsService,
     ProductsProfile,
     CategoriesProfile,
     UserProfile,

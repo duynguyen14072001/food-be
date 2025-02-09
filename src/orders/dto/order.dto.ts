@@ -22,6 +22,11 @@ export class OrderDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
+  payment_method: number;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
   @Transform(({ value }) => dayjs(new Date(value)).format('YYYY-MM-DD'))
   order_date: Date;
 
@@ -34,4 +39,9 @@ export class OrderDto {
   @ApiProperty()
   @IsNotEmpty()
   shipping_address: string;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  note: string;
 }

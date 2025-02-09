@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
@@ -8,6 +6,9 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { ResponseList } from './dto/order.res';
 import { OrderDto } from './dto/order.dto';
+import { CreateOrderDetailListDto } from './dto/create-order-detail.dto';
+import { OrderDetailsService } from './order-details.service';
+import { STATUS_PAYMENT, STATUS_PENDING } from 'src/constants';
 
 @Injectable()
 export class OrdersService {
@@ -16,6 +17,7 @@ export class OrdersService {
     private orderRepository: Repository<Order>,
     @InjectMapper() private readonly classMapper: Mapper,
     private dataSource: DataSource,
+    private orderDetailsService: OrderDetailsService,
   ) {}
 
   async mapOptions(query: any) {
@@ -40,8 +42,34 @@ export class OrdersService {
     return options;
   }
 
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  async create(createOrderDetailListDto: CreateOrderDetailListDto, req: any) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const { shipping_address, note, orders, payment_method } =
+        createOrderDetailListDto;
+
+      // Insert order
+      const createOrder = this.orderRepository.create({
+        user_id: req.user.id,
+        status: STATUS_PENDING,
+        shipping_address,
+        note,
+        payment_method,
+        payment_status: STATUS_PAYMENT,
+      });
+
+      // Insert order detail
+      const data = await this.orderRepository.save(createOrder);
+      const dataDetail = orders.map((item) => ({ ...item, order_id: data.id }));
+      await this.orderDetailsService.create(dataDetail);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(error.message);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findAll(query: any): Promise<ResponseList> {
@@ -69,10 +97,6 @@ export class OrdersService {
 
   findOne(id: number) {
     return `This action returns a #${id} order`;
-  }
-
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
   }
 
   remove(id: number) {

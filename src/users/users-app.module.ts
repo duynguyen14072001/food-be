@@ -27,6 +27,12 @@ import { ProductImagesService } from 'src/products/product-images.service';
 import { Cart } from 'src/carts/entities/cart.entity';
 import { UserCartsController } from 'src/carts/user-carts.controller';
 import { CartsService } from 'src/carts/carts.service';
+import { Order } from 'src/orders/entities/order.entity';
+import { UserOrdersController } from 'src/orders/user-orders.controller';
+import { OrdersService } from 'src/orders/orders.service';
+import { OrdersProfile } from 'src/orders/orders.profile';
+import { OrderDetail } from 'src/orders/entities/order-detail.entity';
+import { OrderDetailsService } from 'src/orders/order-details.service';
 
 @Module({
   imports: [
@@ -39,6 +45,8 @@ import { CartsService } from 'src/carts/carts.service';
       Faq,
       Recommend,
       Cart,
+      Order,
+      OrderDetail,
     ]),
     AuthModule,
     RouterModule.register([
@@ -54,6 +62,7 @@ import { CartsService } from 'src/carts/carts.service';
     UserFaqsController,
     UserRecommendsController,
     UserCartsController,
+    UserOrdersController,
   ],
   providers: [
     ProductsService,
@@ -68,6 +77,9 @@ import { CartsService } from 'src/carts/carts.service';
     FaqsProfile,
     RecommendsService,
     CartsService,
+    OrdersService,
+    OrdersProfile,
+    OrderDetailsService,
   ],
 })
 export class UsersApp {}
