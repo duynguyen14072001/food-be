@@ -55,12 +55,12 @@ export class UserCartsController {
     return await this.cartsService.update(+id, updateCartDto, req);
   }
 
-  @Delete(':id')
+  @Delete()
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
-  async remove(@Request() req, @Param('id') id: string) {
-    return await this.cartsService.remove(+id, req);
+  async remove(@Request() req, @Body() ids: number | number[]) {
+    return await this.cartsService.remove(ids, req);
   }
 }

@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { Cart } from './entities/cart.entity';
@@ -24,9 +28,9 @@ export class CartsService {
       where: {
         user_id: Equal(user.id),
       },
-      relations:{
-        product:true,
-      }
+      relations: {
+        product: true,
+      },
     };
     if (!all && page && per_page) {
       options['skip'] = (page - 1) * per_page;
@@ -57,7 +61,6 @@ export class CartsService {
       const options = await this.mapOptions(query, user);
       const total = await this.cartRepository.count(options);
       const data = await this.cartRepository.find(options);
-
       return {
         data,
         page,
@@ -77,7 +80,7 @@ export class CartsService {
       if (!data) {
         throw new NotFoundException(`Could not find Category with id: ${id}`);
       }
-      if(data.user_id !== req.user.id) {
+      if (data.user_id !== req.user.id) {
         throw new ForbiddenException(`No permission`);
       }
       const newData = await this.cartRepository.create({
@@ -92,18 +95,35 @@ export class CartsService {
     }
   }
 
-  async remove(id: number, req: any) {
+  async remove(id: number | number[] | string[], req: any) {
     try {
-      const data = await this.cartRepository.findOne({
-        where: { id },
+      const ids = Array.isArray(id)
+        ? id.map((item) => Number(item))
+        : [Number(id)];
+
+      const dataList = await this.cartRepository.find({
+        where: ids.map((id) => ({ id })),
       });
-      if (!data) {
-        throw new NotFoundException(`Could not find Category with id: ${id}`);
+
+      if (dataList.length === 0) {
+        throw new NotFoundException(
+          `Could not find Cart with id(s): ${ids.join(', ')}`,
+        );
       }
-      if(data.user_id !== req.user.id) {
-        throw new ForbiddenException(`No permission`);
+
+      for (const data of dataList) {
+        if (data.user_id !== req.user.id) {
+          throw new ForbiddenException(
+            `No permission for cart with id: ${data.id}`,
+          );
+        }
       }
-      return await this.cartRepository.delete(id);
+      return await this.cartRepository
+        .createQueryBuilder()
+        .delete()
+        .from('carts')
+        .where('id IN (:...ids)', { ids })
+        .execute();
     } catch (error) {
       throw new Error(error.message);
     }
