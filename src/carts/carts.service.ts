@@ -7,7 +7,7 @@ import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { Cart } from './entities/cart.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 
 @Injectable()
 export class CartsService {
@@ -95,14 +95,14 @@ export class CartsService {
     }
   }
 
-  async remove(id: number | number[] | string[], req: any) {
+  async remove(ids: number[] | string[], req: any) {
     try {
-      const ids = Array.isArray(id)
-        ? id.map((item) => Number(item))
-        : [Number(id)];
+      const listId =  ids.map((item) => Number(item))
 
       const dataList = await this.cartRepository.find({
-        where: ids.map((id) => ({ id })),
+        where: {
+          id: In(listId)
+        },
       });
 
       if (dataList.length === 0) {
@@ -122,7 +122,7 @@ export class CartsService {
         .createQueryBuilder()
         .delete()
         .from('carts')
-        .where('id IN (:...ids)', { ids })
+        .where('id IN (:...ids)', { ids:listId })
         .execute();
     } catch (error) {
       throw new Error(error.message);

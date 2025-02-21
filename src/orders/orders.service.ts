@@ -64,6 +64,9 @@ export class OrdersService {
       const data = await this.orderRepository.save(createOrder);
       const dataDetail = orders.map((item) => ({ ...item, order_id: data.id }));
       await this.orderDetailsService.create(dataDetail);
+
+      await queryRunner.commitTransaction();
+      return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new Error(error.message);

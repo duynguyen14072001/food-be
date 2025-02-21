@@ -46,5 +46,9 @@ export class ProductDto {
 
   @ApiProperty()
   @AutoMap()
+  category_names: string[];
+
+  @ApiProperty()
+  @AutoMap()
   image_urls: string[];
 }

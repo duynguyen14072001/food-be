@@ -60,7 +60,7 @@ export class UserCartsController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
-  async remove(@Request() req, @Body() ids: number | number[]) {
-    return await this.cartsService.remove(ids, req);
+  async remove(@Request() req, @Body() data: Record<string, any>) {
+    return await this.cartsService.remove(data.ids, req);
   }
 }
