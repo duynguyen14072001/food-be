@@ -39,16 +39,24 @@ export class CartsService {
     return options;
   }
 
-  async create(createCartDto: CreateCartDto, req: any) {
+  async upsert(createCartDto: CreateCartDto, req: any) {
     try {
-      const createData = {
-        ...createCartDto,
-        user_id: req.user.id,
-      };
-      const create = this.cartRepository.create(createData);
-      const data = await this.cartRepository.save(create);
+      const { product_id, quantity } = createCartDto;
+      const user_id = req.user.id;
 
-      return data;
+      const existingCartItem = await this.cartRepository.findOne({
+        where: { product_id, user_id },
+      });
+
+      if (existingCartItem) {
+        existingCartItem.quantity += quantity;
+        return await this.cartRepository.save(existingCartItem);
+      }
+      const createData = this.cartRepository.create({
+        ...createCartDto,
+        user_id,
+      });
+      return await this.cartRepository.save(createData);
     } catch (error) {
       throw new Error(error.message);
     }
@@ -97,11 +105,11 @@ export class CartsService {
 
   async remove(ids: number[] | string[], req: any) {
     try {
-      const listId =  ids.map((item) => Number(item))
+      const listId = ids.map((item) => Number(item));
 
       const dataList = await this.cartRepository.find({
         where: {
-          id: In(listId)
+          id: In(listId),
         },
       });
 
@@ -122,7 +130,7 @@ export class CartsService {
         .createQueryBuilder()
         .delete()
         .from('carts')
-        .where('id IN (:...ids)', { ids:listId })
+        .where('id IN (:...ids)', { ids: listId })
         .execute();
     } catch (error) {
       throw new Error(error.message);

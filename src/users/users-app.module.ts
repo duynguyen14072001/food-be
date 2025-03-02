@@ -33,6 +33,9 @@ import { OrdersService } from 'src/orders/orders.service';
 import { OrdersProfile } from 'src/orders/orders.profile';
 import { OrderDetail } from 'src/orders/entities/order-detail.entity';
 import { OrderDetailsService } from 'src/orders/order-details.service';
+import { Review } from 'src/reviews/entities/review.entity';
+import { UserReviewsController } from 'src/reviews/user-reviews.controller';
+import { ReviewsService } from 'src/reviews/reviews.service';
 
 @Module({
   imports: [
@@ -47,6 +50,7 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
       Cart,
       Order,
       OrderDetail,
+      Review,
     ]),
     AuthModule,
     RouterModule.register([
@@ -63,6 +67,7 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
     UserRecommendsController,
     UserCartsController,
     UserOrdersController,
+    UserReviewsController,
   ],
   providers: [
     ProductsService,
@@ -80,6 +85,7 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
     OrdersService,
     OrdersProfile,
     OrderDetailsService,
+    ReviewsService,
   ],
 })
 export class UsersApp {}

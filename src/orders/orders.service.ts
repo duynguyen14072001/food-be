@@ -97,12 +97,4 @@ export class OrdersService {
       throw new Error(error.message);
     }
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
-  }
 }

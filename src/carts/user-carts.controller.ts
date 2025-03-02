@@ -29,8 +29,8 @@ export class UserCartsController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
-  async create(@Request() req, @Body() createCartDto: CreateCartDto) {
-    return await this.cartsService.create(createCartDto, req);
+  async upsert(@Request() req, @Body() createCartDto: CreateCartDto) {
+    return await this.cartsService.upsert(createCartDto, req);
   }
 
   @Get()
