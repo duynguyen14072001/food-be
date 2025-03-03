@@ -13,7 +13,7 @@ export class ValidateMail implements ValidatorConstraintInterface {
 
   async validate(value: any, args: ValidationArguments) {
     try {
-      const admin = await this.usersService.findOne(value);
+      const admin = await this.usersService.findOneByID(value);
 
       return !!admin;
     } catch (e) {

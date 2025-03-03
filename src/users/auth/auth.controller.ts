@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Request,
   Patch,
+  Get,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -38,6 +39,15 @@ export class AuthController {
   @ApiBadRequestResponse()
   signIn(@Body() loginDto: LoginDto): Promise<LoginRes> {
     return this.authService.signIn(loginDto.mail_address, loginDto.password);
+  }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
+  getMe(@Request() req) {
+    return this.authService.getMe(req);
   }
 
   @Public()

@@ -37,6 +37,14 @@ export class User {
   @Column({
     type: 'varchar',
     length: 255,
+    nullable: true,
+  })
+  @AutoMap()
+  image_url: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
   })
   @AutoMap()
   password: string;

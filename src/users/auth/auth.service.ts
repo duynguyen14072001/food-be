@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -72,6 +73,12 @@ export class AuthService {
     });
 
     const { length: existData } = data;
+    const dataUser = await this.usersService.findOneByEmail(mail_address);
+
+    if (!dataUser) {
+      throw new ForbiddenException(`No data`);
+    }
+
     if (!existData || (existData && isExpiredToken(data[0]))) {
       const token = uuidv4();
       const createData = this.passwordResetRepository.create({
@@ -85,8 +92,8 @@ export class AuthService {
 
       await this.mailService.sendMail({
         mail_to: forgotPasswordDto.mail_address,
-        subject: 'パスワードリセットリクエストを受け取りました',
-        template: `mail-forgot-password.pug`,
+        subject: 'FOOD_TLU-FORGOT_PASSWORD',
+        template: `user/mail-forgot-password.pug`,
         context: { url },
       });
     }
@@ -110,5 +117,9 @@ export class AuthService {
     await this.passwordResetRepository.delete(data[0].id);
 
     return true;
+  }
+
+  async getMe(req: any) {
+    return await this.usersService.findOneByID(req.user.id);
   }
 }

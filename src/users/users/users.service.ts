@@ -67,20 +67,12 @@ export class UsersService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
   async findOneByEmail(email: string): Promise<User> {
     return await this.userRepository.findOneBy({ mail_address: email });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 
   async updatePassword(id: number, password: string) {

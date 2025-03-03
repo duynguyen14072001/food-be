@@ -15,6 +15,11 @@ export class UserDto {
   @AutoMap()
   @ApiProperty()
   @IsEmail()
+  image_url: string;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsEmail()
   phone_number: string;
 
   @AutoMap()

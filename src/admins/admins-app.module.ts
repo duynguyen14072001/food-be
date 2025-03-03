@@ -5,11 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from '../categories/entities/category.entity';
 import { AuthModule } from './auth/auth.module';
 import { User } from '../users/users/entities/user.entity';
-import { Code } from '../codes/entities/code.entity';
 import { Product } from '../products/entities/product.entity';
-import { AdminCodesController } from '../codes/admin-codes.controller';
 import { AdminProductsController } from '../products/admin-products.controller';
-import { CodesService } from '../codes/codes.service';
 import { ProductsService } from '../products/products.service';
 import { ProductCategoryService } from '../products/product-category.service';
 import { ProductCategory } from '../products/entities/product-category.entity';
@@ -49,7 +46,6 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
     TypeOrmModule.forFeature([
       Category,
       User,
-      Code,
       Product,
       ProductCategory,
       ProductImages,
@@ -74,7 +70,6 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
     ]),
   ],
   controllers: [
-    AdminCodesController,
     AdminCategoriesController,
     AdminProductsController,
     AdminUsersController,
@@ -85,7 +80,6 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
   ],
   providers: [
     CategoriesService,
-    CodesService,
     ProductsService,
     ProductCategoryService,
     ProductImagesService,
