@@ -19,10 +19,10 @@ import { LoginRes } from './dto/login.res';
 import { LoginDto } from './dto/login.dto';
 import { Public } from './public.decorator';
 import { AuthService } from './auth.service';
-import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignupDto } from './dto/signup.dto';
+import { UpdateInfoDto } from './dto/update-info.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -62,13 +62,13 @@ export class AuthController {
     return this.authService.signUp(signupDto);
   }
 
-  @Patch('change-password')
+  @Patch('update-info')
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
-  changePassword(@Request() req, @Body() changePasswordDto: ChangePasswordDto) {
-    return this.authService.changePassword(req.user, changePasswordDto);
+  async updateInfo(@Request() req, @Body() updateInfoDto: UpdateInfoDto) {
+    return await this.authService.updateInfo(req, updateInfoDto);
   }
 
   @Public()

@@ -71,8 +71,20 @@ export class UsersService {
     return await this.userRepository.findOneBy({ mail_address: email });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async updateData(id: number, dataUpdate: any) {
+    try {
+      const { mail_address, ...updateData } = dataUpdate;
+      const data = await this.userRepository.findOne({
+        where: { id },
+      });
+      if (!data) {
+        throw new NotFoundException(`Could not find Account with id: ${id}`);
+      }
+
+      return await await this.userRepository.update(id, updateData);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async updatePassword(id: number, password: string) {

@@ -8,7 +8,6 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { LoginRes } from './dto/login.res';
 import { ConfigService } from '@nestjs/config';
-import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { MailService } from '../../mailers/mailers.service';
 import { PasswordResetToken } from '../../password-reset-tokens/entity/password-reset-token.entity';
 import { UsersService } from '../users/users.service';
+import { UpdateInfoDto } from './dto/update-info.dto';
 
 @Injectable()
 export class AuthService {
@@ -52,17 +52,26 @@ export class AuthService {
     return await this.usersService.create(payload);
   }
 
-  async changePassword(user: any, changePasswordDto: ChangePasswordDto) {
-    const userData = await this.usersService.findOneByEmail(user.mail_address);
-
-    if (
-      !userData ||
-      !(await argon2.verify(userData.password, changePasswordDto.old_password))
-    ) {
+  async updateInfo(req: any, updateInfoDto: UpdateInfoDto) {
+    const userData = await this.usersService.findOneByEmail(
+      req.user.mail_address,
+    );
+    const { new_password, old_password, ...dataUpdate } = updateInfoDto;
+    if (!userData) {
       throw new NotFoundException('Failed');
     }
-    const password = await argon2.hash(changePasswordDto.new_password);
-    return this.usersService.updatePassword(userData.id, password);
+    if (old_password) {
+      if (!(await argon2.verify(userData.password, old_password))) {
+        throw new ForbiddenException('Failed');
+      }
+      const password = await argon2.hash(new_password);
+      const data = {
+        ...dataUpdate,
+        password,
+      };
+      return await this.usersService.updateData(+userData.id, data);
+    }
+    return await this.usersService.updateData(+userData.id, dataUpdate);
   }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {

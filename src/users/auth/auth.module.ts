@@ -8,6 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordResetToken } from '../../password-reset-tokens/entity/password-reset-token.entity';
 import { MailsModule } from '../../mailers/mailers.module';
 import { UsersModule } from '../users/users.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth.guard';
 
 dotenvConfig();
 
@@ -23,6 +25,13 @@ dotenvConfig();
     MailsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, ValidateMail],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    AuthService,
+    ValidateMail,
+  ],
 })
 export class AuthModule {}

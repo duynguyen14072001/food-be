@@ -36,6 +36,7 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
 import { Review } from 'src/reviews/entities/review.entity';
 import { UserReviewsController } from 'src/reviews/user-reviews.controller';
 import { ReviewsService } from 'src/reviews/reviews.service';
+import { UploadsModule } from 'src/uploads/uploads.module';
 
 @Module({
   imports: [
@@ -53,10 +54,15 @@ import { ReviewsService } from 'src/reviews/reviews.service';
       Review,
     ]),
     AuthModule,
+    UploadsModule,
     RouterModule.register([
       {
         path: 'users',
         module: AuthModule,
+      },
+      {
+        path: 'users',
+        module: UploadsModule,
       },
     ]),
   ],
