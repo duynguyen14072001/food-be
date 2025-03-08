@@ -26,6 +26,10 @@ export class UserReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
   create(@Request() req, @Body() createReviewDto: CreateReviewDto) {
     return this.reviewsService.create(createReviewDto, req);
   }
@@ -38,6 +42,10 @@ export class UserReviewsController {
   }
 
   @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
   update(
     @Request() req,
     @Param('id') id: string,
@@ -47,6 +55,10 @@ export class UserReviewsController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
   remove(@Request() req, @Param('id') id: string) {
     return this.reviewsService.remove(+id, req);
   }

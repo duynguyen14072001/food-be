@@ -28,6 +28,8 @@ export class Order {
 
   @Column({
     type: 'tinyint',
+    comment:
+      '1-Đang chờ, 2-Đang giao, 3-Giao hàng thành công, 4-Giao hàng thất bại',
   })
   @AutoMap()
   status: number;
@@ -59,7 +61,7 @@ export class Order {
 
   @Column({
     type: 'tinyint',
-    comment: '1-Đã thanh toán, 2-Chưa thanh toán,',
+    comment: '1-Đã thanh toán, 2-Chưa thanh toán, 3-Thanh toán thất bại',
   })
   @AutoMap()
   payment_status: number;

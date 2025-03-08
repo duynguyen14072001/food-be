@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
@@ -9,6 +13,7 @@ import { OrderDto } from './dto/order.dto';
 import { CreateOrderDetailListDto } from './dto/create-order-detail.dto';
 import { OrderDetailsService } from './order-details.service';
 import { STATUS_PAYMENT, STATUS_PENDING } from 'src/constants';
+import { UpdateStatusOrderDto } from './dto/update-status-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -93,6 +98,22 @@ export class OrdersService {
         perPage,
         total,
       };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async updateStatus(id: number, updateStatusOrderDto: UpdateStatusOrderDto) {
+    try {
+      const newData = await this.orderRepository.create({
+        ...updateStatusOrderDto,
+      });
+      const data = await this.orderRepository.update({ id }, newData);
+
+      if (!data) {
+        throw new UnauthorizedException();
+      }
+      return true;
     } catch (error) {
       throw new Error(error.message);
     }

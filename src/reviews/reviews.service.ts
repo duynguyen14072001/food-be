@@ -27,7 +27,7 @@ export class ReviewsService {
       order: orderMap,
       where: {},
       relations: {
-        product: true,
+        user: true,
       },
     };
 
@@ -38,7 +38,7 @@ export class ReviewsService {
         if (key === 'product_id') {
           options.where = {
             ...options.where,
-            id: Equal(data),
+            product_id: Equal(data),
           };
         }
       }
@@ -51,8 +51,17 @@ export class ReviewsService {
     return options;
   }
 
-  create(createReviewDto: CreateReviewDto, req: any) {
-    return 'This action adds a new review';
+  async create(createReviewDto: CreateReviewDto, req: any) {
+    try {
+      const createDataDto = {
+        ...createReviewDto,
+        user_id: req.user.id,
+      };
+      const createData = this.reviewRepository.create(createDataDto);
+      return await this.reviewRepository.save(createData);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async findAll(query: any) {
@@ -60,12 +69,36 @@ export class ReviewsService {
       const { page, per_page: perPage } = query;
       const options = await this.mapOptions(query);
       const total = await this.reviewRepository.count(options);
+      const starCounts = await this.reviewRepository
+        .createQueryBuilder('review')
+        .select('review.star_number', 'star_number')
+        .addSelect('COUNT(*)', 'count')
+        .where(options?.where || {})
+        .groupBy('review.star_number')
+        .getRawMany();
+
+      const totalStars = starCounts.reduce(
+        (sum, item) => sum + Number(item.star_number) * Number(item.count),
+        0,
+      );
+      const averageRating = total > 0 ? totalStars / total : 0;
+
+      const percentages = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+      starCounts.forEach(({ star_number, count }) => {
+        percentages[star_number] = total
+          ? parseFloat(((Number(count) / total) * 100).toFixed(1))
+          : 0;
+      });
+
       const data = await this.reviewRepository.find(options);
       return {
         data,
         page,
         perPage,
         total,
+        percentages,
+        averageRating: parseFloat(averageRating.toFixed(1)),
       };
     } catch (error) {
       throw new Error(error.message);
@@ -78,7 +111,7 @@ export class ReviewsService {
         where: { id },
       });
       if (!data) {
-        throw new NotFoundException(`Could not find Category with id: ${id}`);
+        throw new NotFoundException(`Could not find review with id: ${id}`);
       }
       if (data.user_id !== req.user.id) {
         throw new ForbiddenException(`No permission`);
@@ -101,7 +134,7 @@ export class ReviewsService {
         where: { id },
       });
       if (!data) {
-        throw new NotFoundException(`Could not find Category with id: ${id}`);
+        throw new NotFoundException(`Could not find review with id: ${id}`);
       }
       if (data.user_id !== req.user.id) {
         throw new ForbiddenException(`No permission`);

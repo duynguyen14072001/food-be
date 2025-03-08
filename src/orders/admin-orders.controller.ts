@@ -16,6 +16,7 @@ import {
   ApiBearerAuth,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { UpdateStatusOrderDto } from './dto/update-status-order.dto';
 
 @Controller('orders')
 export class AdminOrdersController {
@@ -28,5 +29,17 @@ export class AdminOrdersController {
   @ApiBearerAuth('JWT-auth')
   async findAll(@Query() query) {
     return await this.ordersService.findAll(query);
+  }
+
+  @Patch('status/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
+  async update(
+    @Param('id') id: string,
+    @Body() updateStatusOrderDto: UpdateStatusOrderDto,
+  ) {
+    return await this.ordersService.updateStatus(+id, updateStatusOrderDto);
   }
 }
