@@ -7,6 +7,7 @@ import {
   Request,
   Patch,
   Get,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -23,6 +24,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { SignupDto } from './dto/signup.dto';
 import { UpdateInfoDto } from './dto/update-info.dto';
+import { AuthGuard } from './auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -46,6 +48,7 @@ export class AuthController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard)
   getMe(@Request() req) {
     return this.authService.getMe(req);
   }
@@ -67,6 +70,7 @@ export class AuthController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard)
   async updateInfo(@Request() req, @Body() updateInfoDto: UpdateInfoDto) {
     return await this.authService.updateInfo(req, updateInfoDto);
   }

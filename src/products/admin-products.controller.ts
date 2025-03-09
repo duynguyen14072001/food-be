@@ -41,6 +41,15 @@ export class AdminProductsController {
     return await this.productsService.findAll(query);
   }
 
+  @Get('ranking')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
+  async findAllByRanking(@Query() query) {
+    return await this.productsService.findAllByRanking(query);
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse()

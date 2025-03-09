@@ -37,6 +37,8 @@ import { Review } from 'src/reviews/entities/review.entity';
 import { UserReviewsController } from 'src/reviews/user-reviews.controller';
 import { ReviewsService } from 'src/reviews/reviews.service';
 import { UploadsModule } from 'src/uploads/uploads.module';
+import { UsersService } from './users/users.service';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -44,6 +46,7 @@ import { UploadsModule } from 'src/uploads/uploads.module';
       Product,
       ProductCategory,
       ProductImages,
+      User,
       Banner,
       File,
       Faq,
@@ -92,6 +95,7 @@ import { UploadsModule } from 'src/uploads/uploads.module';
     OrdersProfile,
     OrderDetailsService,
     ReviewsService,
+    UsersService,
   ],
 })
 export class UsersApp {}

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Between, DataSource, Repository } from 'typeorm';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { ResponseList } from './dto/order.res';
@@ -14,6 +14,7 @@ import { CreateOrderDetailListDto } from './dto/create-order-detail.dto';
 import { OrderDetailsService } from './order-details.service';
 import { STATUS_PAYMENT, STATUS_PENDING } from 'src/constants';
 import { UpdateStatusOrderDto } from './dto/update-status-order.dto';
+import { UpdateStatusPaymentOrderDto } from './dto/update-status-payment-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -26,7 +27,7 @@ export class OrdersService {
   ) {}
 
   async mapOptions(query: any) {
-    const { search, page, per_page, orders, all } = query;
+    const { search, page, per_page, orders, all, filters } = query;
     const orderMap = orders?.reduce(function (result, item) {
       result[item['key']] = item['dir'];
       return result;
@@ -40,6 +41,20 @@ export class OrdersService {
         orderDetails: true,
       },
     };
+
+    if (filters?.length) {
+      const filterList = filters.filter((item) => item.data);
+      for (const i of filterList) {
+        const { key, data } = i;
+        if (key === 'date_range') {
+          options.where = {
+            ...options.where,
+            created_at: Between(data[0], data[1]),
+          };
+        }
+      }
+    }
+
     if (!all && page && per_page) {
       options['skip'] = (page - 1) * per_page;
       options['take'] = per_page;
@@ -107,6 +122,25 @@ export class OrdersService {
     try {
       const newData = await this.orderRepository.create({
         ...updateStatusOrderDto,
+      });
+      const data = await this.orderRepository.update({ id }, newData);
+
+      if (!data) {
+        throw new UnauthorizedException();
+      }
+      return true;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async updateStatusPayment(
+    id: number,
+    updateStatusPaymentOrderDto: UpdateStatusPaymentOrderDto,
+  ) {
+    try {
+      const newData = await this.orderRepository.create({
+        ...updateStatusPaymentOrderDto,
       });
       const data = await this.orderRepository.update({ id }, newData);
 

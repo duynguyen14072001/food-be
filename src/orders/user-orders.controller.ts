@@ -5,6 +5,7 @@ import {
   Post,
   Body,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import {
@@ -13,6 +14,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CreateOrderDetailListDto } from './dto/create-order-detail.dto';
+import { AuthGuard } from 'src/users/auth/auth.guard';
 
 @Controller('orders')
 export class UserOrdersController {
@@ -22,6 +24,7 @@ export class UserOrdersController {
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
+  @UseGuards(AuthGuard)
   @ApiBearerAuth('JWT-auth')
   async create(
     @Request() req,

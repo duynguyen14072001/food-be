@@ -48,9 +48,11 @@ export class AuthService {
     };
   }
 
-  async changePassword(user: any, changePasswordDto: ChangePasswordDto) {
-    const admin = await this.adminsService.findOneByEmail(user.mail_address);
-
+  async changePassword(req: any, changePasswordDto: ChangePasswordDto) {
+    const admin = await this.adminsService.findOneByEmail(
+      req.user.mail_address,
+    );
+    console.log('req :>> ', req.user);
     if (
       !admin ||
       !(await argon2.verify(admin.password, changePasswordDto.old_password))
@@ -82,8 +84,8 @@ export class AuthService {
 
       await this.mailService.sendMail({
         mail_to: forgotPasswordDto.mail_address,
-        subject: 'パスワードリセットリクエストを受け取りました',
-        template: `mail-forgot-password.pug`,
+        subject: 'FOOD_TLU_ADMIN-FORGOT_PASSWORD',
+        template: `admin/mail-forgot-password.pug`,
         context: { url },
       });
     }

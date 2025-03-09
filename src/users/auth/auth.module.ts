@@ -7,15 +7,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordResetToken } from '../../password-reset-tokens/entity/password-reset-token.entity';
 import { MailsModule } from '../../mailers/mailers.module';
 import { UsersModule } from '../users/users.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth.guard';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
 
 dotenvConfig();
 
 @Module({
   imports: [
     UsersModule,
-    TypeOrmModule.forFeature([PasswordResetToken]),
+    TypeOrmModule.forFeature([PasswordResetToken, User]),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
@@ -24,12 +24,6 @@ dotenvConfig();
     MailsModule,
   ],
   controllers: [AuthController],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    AuthService,
-  ],
+  providers: [AuthService, UsersService],
 })
 export class AuthModule {}

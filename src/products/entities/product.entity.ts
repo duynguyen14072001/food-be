@@ -15,6 +15,7 @@ import { OrderDetail } from '../../orders/entities/order-detail.entity';
 import { Recommend } from 'src/recommends/entities/recommend.entity';
 import { ProductImages } from './product-images.entity';
 import { Cart } from 'src/carts/entities/cart.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 
 @Entity({ schema: 'public', name: 'products' })
 export class Product {
@@ -106,4 +107,8 @@ export class Product {
   @OneToMany(() => Cart, (cart) => cart.product)
   @JoinColumn({ name: 'product_id' })
   carts: Cart[];
+
+  @OneToMany(() => Review, (review) => review.product)
+  @JoinColumn({ name: 'product_id' })
+  reviews: Review[];
 }

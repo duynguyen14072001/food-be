@@ -22,6 +22,6 @@ export class ValidateMail implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return `メールアドレスが正しくありません。`;
+    return `Email chưa được đăng kí`;
   }
 }

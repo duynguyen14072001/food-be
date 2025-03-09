@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -20,6 +21,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Public } from 'src/admins/auth/public.decorator';
+import { AuthGuard } from 'src/users/auth/auth.guard';
 
 @Controller('reviews')
 export class UserReviewsController {
@@ -30,6 +32,7 @@ export class UserReviewsController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuard)
   create(@Request() req, @Body() createReviewDto: CreateReviewDto) {
     return this.reviewsService.create(createReviewDto, req);
   }
@@ -45,6 +48,7 @@ export class UserReviewsController {
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
+  @UseGuards(AuthGuard)
   @ApiBearerAuth('JWT-auth')
   update(
     @Request() req,
@@ -57,6 +61,7 @@ export class UserReviewsController {
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse()
+  @UseGuards(AuthGuard)
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
   remove(@Request() req, @Param('id') id: string) {

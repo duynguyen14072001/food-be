@@ -17,6 +17,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { UpdateStatusOrderDto } from './dto/update-status-order.dto';
+import { UpdateStatusPaymentOrderDto } from './dto/update-status-payment-order.dto';
 
 @Controller('orders')
 export class AdminOrdersController {
@@ -36,10 +37,25 @@ export class AdminOrdersController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiBearerAuth('JWT-auth')
-  async update(
+  async updateStatus(
     @Param('id') id: string,
     @Body() updateStatusOrderDto: UpdateStatusOrderDto,
   ) {
     return await this.ordersService.updateStatus(+id, updateStatusOrderDto);
+  }
+
+  @Patch('status-payment/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiBearerAuth('JWT-auth')
+  async updateStatusPayment(
+    @Param('id') id: string,
+    @Body() updateStatusPaymentOrderDto: UpdateStatusPaymentOrderDto,
+  ) {
+    return await this.ordersService.updateStatusPayment(
+      +id,
+      updateStatusPaymentOrderDto,
+    );
   }
 }

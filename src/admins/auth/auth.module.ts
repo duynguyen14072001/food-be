@@ -1,8 +1,6 @@
 import { AdminsModule } from './../admins/admins.module';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { config as dotenvConfig } from 'dotenv';
 import { AuthController } from './auth.controller';
@@ -10,13 +8,15 @@ import { ValidateMail } from './dto/mail-validation.dto';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordResetToken } from '../../password-reset-tokens/entity/password-reset-token.entity';
 import { MailsModule } from '../../mailers/mailers.module';
+import { Admin } from '../admins/entities/admin.entity';
+import { AdminsService } from '../admins/admins.service';
 
 dotenvConfig();
 
 @Module({
   imports: [
     AdminsModule,
-    TypeOrmModule.forFeature([PasswordResetToken]),
+    TypeOrmModule.forFeature([PasswordResetToken, Admin]),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
@@ -25,13 +25,6 @@ dotenvConfig();
     MailsModule,
   ],
   controllers: [AuthController],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    AuthService,
-    ValidateMail,
-  ],
+  providers: [AuthService, AdminsService, ValidateMail],
 })
 export class AuthModule {}

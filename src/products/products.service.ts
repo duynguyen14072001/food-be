@@ -125,6 +125,69 @@ export class ProductsService {
     }
   }
 
+  async findAllByRanking(query: any): Promise<any> {
+    try {
+      const { page, per_page: perPage, all, orders, filters } = query;
+
+      const orderMap = orders?.reduce(function (result, item) {
+        result[item['key']] = item['dir'];
+        return result;
+      }, {});
+
+      const mainQuery = this.productRepository
+        .createQueryBuilder('product')
+        .leftJoin('product.orderDetails', 'orderDetail');
+
+      const params: any = {};
+      const dateRangeFilter = filters?.find(
+        (filter) => filter.key === 'date_range',
+      );
+      if (dateRangeFilter) {
+        params.startDate = dateRangeFilter.data[0];
+        params.endDate = dateRangeFilter.data[1];
+      }
+
+      const joins = [
+        { entity: 'orderDetail.order', alias: 'orders' },
+        { entity: 'product.reviews', alias: 'review' },
+      ];
+
+      joins.forEach((join) => {
+        const condition = dateRangeFilter
+          ? `${join.alias}.created_at BETWEEN :startDate AND :endDate`
+          : undefined;
+
+        mainQuery.leftJoin(join.entity, join.alias, condition, params);
+      });
+
+      mainQuery
+        .select([
+          'product.id',
+          'product.name',
+          'COUNT(DISTINCT orderDetail.id) AS order_count',
+          'COUNT(DISTINCT review.id) AS review_count',
+          'COALESCE(ROUND(AVG(review.star_number), 1), 0) AS avg_rating',
+        ])
+        .groupBy('product.id')
+        .orderBy(orderMap);
+
+      if (!all && page && perPage)
+        mainQuery.offset((page - 1) * perPage).limit(perPage);
+      const data = await mainQuery.getRawMany();
+
+      const total = await mainQuery.getCount();
+
+      return {
+        data,
+        page,
+        perPage,
+        total,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async findAllNoMapper(query: any): Promise<ResponseListNoMapper> {
     try {
       const { page, per_page: perPage } = query;
