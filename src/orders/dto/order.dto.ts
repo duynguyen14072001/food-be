@@ -38,7 +38,23 @@ export class OrderDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
+  @Transform(({ value }) => dayjs(new Date(value)).format('YYYY-MM-DD'))
+  created_at: Date;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
   user_name: string;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  item_count: number;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  total_price: number;
 
   @AutoMap()
   @ApiProperty()

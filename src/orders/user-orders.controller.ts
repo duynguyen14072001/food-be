@@ -6,6 +6,9 @@ import {
   Body,
   Request,
   UseGuards,
+  Get,
+  Query,
+  Param,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import {
@@ -31,5 +34,25 @@ export class UserOrdersController {
     @Body() createOrderDetailDto: CreateOrderDetailListDto,
   ) {
     return await this.ordersService.create(createOrderDetailDto, req);
+  }
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  async list(@Request() req, @Query() query) {
+    return await this.ordersService.findAllByUser(query, req);
+  }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  async detail(@Request() req, @Param('id') id: string) {
+    return await this.ordersService.findOneByID(+id, req);
   }
 }

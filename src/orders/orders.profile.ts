@@ -20,6 +20,21 @@ export class OrdersProfile extends AutomapperProfile {
           (d) => d.user_name,
           mapFrom((e) => e.user.name),
         ),
+        forMember(
+          (d) => d.item_count,
+          mapFrom((e) =>
+            e.orderDetails.reduce((total, item) => total + item.quantity, 0),
+          ),
+        ),
+        forMember(
+          (d) => d.total_price,
+          mapFrom((e) =>
+            e.orderDetails.reduce(
+              (total, item) => total + item.quantity * item.amount,
+              0,
+            ),
+          ),
+        ),
       );
     };
   }

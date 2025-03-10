@@ -1,11 +1,12 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Order } from './entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, DataSource, Repository } from 'typeorm';
+import { Between, DataSource, Equal, Repository } from 'typeorm';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { ResponseList } from './dto/order.res';
@@ -26,7 +27,7 @@ export class OrdersService {
     private orderDetailsService: OrderDetailsService,
   ) {}
 
-  async mapOptions(query: any) {
+  async mapOptions(query: any, user: any = null) {
     const { search, page, per_page, orders, all, filters } = query;
     const orderMap = orders?.reduce(function (result, item) {
       result[item['key']] = item['dir'];
@@ -41,6 +42,13 @@ export class OrdersService {
         orderDetails: true,
       },
     };
+
+    if (user) {
+      options.where = {
+        ...options.where,
+        user_id: Equal(user.id),
+      };
+    }
 
     if (filters?.length) {
       const filterList = filters.filter((item) => item.data);
@@ -99,6 +107,53 @@ export class OrdersService {
     try {
       const { page, per_page: perPage } = query;
       const options = await this.mapOptions(query);
+      const total = await this.orderRepository.count(options);
+      const data = await this.orderRepository.find(options);
+
+      const result = await this.classMapper.mapArrayAsync(
+        data,
+        Order,
+        OrderDto,
+      );
+      return {
+        data: result,
+        page,
+        perPage,
+        total,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async findOneByID(id: number, req: any): Promise<any> {
+    try {
+      const data = await this.orderRepository.findOne({
+        where: { id },
+        relations: {
+          orderDetails: {
+            product: true,
+          },
+        },
+      });
+
+      if (data.user_id !== req.user.id) {
+        throw new ForbiddenException(`No permission`);
+      }
+
+      if (!data) {
+        throw new NotFoundException(`Could not find Order with id: ${id}`);
+      }
+      return await data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async findAllByUser(query: any, req: any): Promise<ResponseList> {
+    try {
+      const { page, per_page: perPage } = query;
+      const options = await this.mapOptions(query, req.user);
       const total = await this.orderRepository.count(options);
       const data = await this.orderRepository.find(options);
 
