@@ -147,7 +147,7 @@ export class AdminsService {
       if (req.user.id != AdminRole.ADMIN) {
         throw new ForbiddenException('No permission');
       }
-      return await this.adminRepository.softDelete(ids);
+      return await this.adminRepository.delete(ids);
     } catch (error) {
       throw new Error(error.message);
     }
