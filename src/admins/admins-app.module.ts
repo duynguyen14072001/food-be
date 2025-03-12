@@ -28,7 +28,6 @@ import { AdminBannersController } from '../banners/admin-banners.controller';
 import { BannersService } from '../banners/banners.service';
 import { File } from '../uploads/entities/upload.entity';
 import { UploadsCloudinaryService } from '../uploads/uploads-cloudinary.service';
-import { UploadsModule } from '../uploads/uploads.module';
 import { BannersProfile } from 'src/banners/banners.profile';
 import { AdminFaqsController } from 'src/faqs/admin-faqs.controller';
 import { Faq } from 'src/faqs/entities/faq.entity';
@@ -40,6 +39,7 @@ import { RecommendsService } from 'src/recommends/recommends.service';
 import { ProductImagesService } from 'src/products/product-images.service';
 import { ProductImages } from 'src/products/entities/product-images.entity';
 import { OrderDetailsService } from 'src/orders/order-details.service';
+import { UploadsController } from 'src/uploads/uploads.controller';
 
 @Module({
   imports: [
@@ -57,15 +57,10 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
       Recommend,
     ]),
     AuthModule,
-    UploadsModule,
     RouterModule.register([
       {
         path: 'admins',
         module: AuthModule,
-      },
-      {
-        path: 'admins',
-        module: UploadsModule,
       },
     ]),
   ],
@@ -77,6 +72,7 @@ import { OrderDetailsService } from 'src/orders/order-details.service';
     AdminBannersController,
     AdminFaqsController,
     AdminRecommendsController,
+    UploadsController,
   ],
   providers: [
     CategoriesService,
