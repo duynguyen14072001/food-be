@@ -1,6 +1,8 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
@@ -10,9 +12,9 @@ import { InjectMapper } from '@automapper/nestjs';
 import { ResponseList } from './dto/admin.res';
 import { AdminDto } from './dto/admin.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { randomStr } from './admins.constants';
+import { AdminRole, randomStr } from './admins.constants';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateAdminDto } from './dto/update-admin.dto';
+import { UpdateAdminRoleDto } from './dto/update-admin-role.dto';
 import * as argon2 from 'argon2';
 import { MailService } from '../../mailers/mailers.service';
 
@@ -82,8 +84,11 @@ export class AdminsService {
     return await this.classMapper.mapAsync(data, Admin, AdminDto);
   }
 
-  async create(createAdminDto: CreateAdminDto): Promise<AdminDto> {
+  async create(createAdminDto: CreateAdminDto, req: any): Promise<AdminDto> {
     try {
+      if (req.user.id != AdminRole.ADMIN) {
+        throw new ForbiddenException('No permission');
+      }
       const pass = randomStr(10);
       const password = await argon2.hash(pass);
 
@@ -101,8 +106,8 @@ export class AdminsService {
       if (data) {
         await this.mailService.sendMail({
           mail_to: createAdminDto.mail_address,
-          subject: 'Welcome to Food TLY',
-          template: `mail-invite-admin.pug`,
+          subject: 'Welcome to Food TLU',
+          template: `admin/mail-invite-admin.pug`,
           context: {
             pass,
           },
@@ -114,28 +119,34 @@ export class AdminsService {
     }
   }
 
-  async update(id: number, updateAdminDto: UpdateAdminDto): Promise<AdminDto> {
+  async updateRole(
+    id: number,
+    updateAdminRoleDto: UpdateAdminRoleDto,
+    req: any,
+  ): Promise<any> {
     try {
-      const data = await this.adminRepository.findOne({
-        where: { id },
-      });
-      if (!data) {
-        throw new NotFoundException(`Could not find Account with id: ${id}`);
+      if (req.user.id != AdminRole.ADMIN) {
+        throw new ForbiddenException('No permission');
       }
       const newData = await this.adminRepository.create({
-        ...data,
-        ...updateAdminDto,
+        ...updateAdminRoleDto,
       });
-      await this.adminRepository.update({ id }, newData);
+      const data = await this.adminRepository.update({ id }, newData);
 
-      return await this.classMapper.mapAsync(newData, Admin, AdminDto);
+      if (!data) {
+        throw new UnauthorizedException();
+      }
+      return true;
     } catch (error) {
       throw new Error(error.message);
     }
   }
 
-  async remove(ids: number[] | number) {
+  async remove(ids: number[] | number, req: any) {
     try {
+      if (req.user.id != AdminRole.ADMIN) {
+        throw new ForbiddenException('No permission');
+      }
       return await this.adminRepository.softDelete(ids);
     } catch (error) {
       throw new Error(error.message);

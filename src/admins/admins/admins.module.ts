@@ -5,20 +5,11 @@ import { AdminsController } from './admins.controller';
 import { AdminProfile } from './admins.profile';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Admin } from './entities/admin.entity';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './roles.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Admin]), MailsModule],
   controllers: [AdminsController],
-  providers: [
-    AdminsService,
-    AdminProfile,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-  ],
+  providers: [AdminsService, AdminProfile],
   exports: [AdminsService],
 })
 export class AdminsModule {}
