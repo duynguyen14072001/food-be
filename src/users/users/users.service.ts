@@ -9,6 +9,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { UserDto } from './dto/user.dto';
 import { ResponseList } from './dto/user.res';
+import { IMAGE_URL_USER_DEFAULT } from 'src/constants';
 
 @Injectable()
 export class UsersService {
@@ -38,7 +39,11 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<UserDto> {
     try {
-      const createData = this.userRepository.create(createUserDto);
+      const dataCreate = {
+        ...createUserDto,
+        image_url: IMAGE_URL_USER_DEFAULT,
+      };
+      const createData = this.userRepository.create(dataCreate);
       const data = await this.userRepository.save(createData);
 
       return await this.classMapper.mapAsync(data, User, UserDto);

@@ -13,7 +13,7 @@ import { ResponseList } from './dto/order.res';
 import { OrderDto } from './dto/order.dto';
 import { CreateOrderDetailListDto } from './dto/create-order-detail.dto';
 import { OrderDetailsService } from './order-details.service';
-import { STATUS_PAYMENT, STATUS_PENDING } from 'src/constants';
+import { STATUS_PENDING, UNPAID_STATUS } from 'src/constants';
 import { UpdateStatusOrderDto } from './dto/update-status-order.dto';
 import { UpdateStatusPaymentOrderDto } from './dto/update-status-payment-order.dto';
 
@@ -85,7 +85,7 @@ export class OrdersService {
         shipping_address,
         note,
         payment_method,
-        payment_status: STATUS_PAYMENT,
+        payment_status: UNPAID_STATUS,
       });
 
       // Insert order detail
