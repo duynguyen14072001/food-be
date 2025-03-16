@@ -39,6 +39,7 @@ import { ReviewsService } from 'src/reviews/reviews.service';
 import { UsersService } from './users/users.service';
 import { User } from './users/entities/user.entity';
 import { UploadsController } from 'src/uploads/uploads.controller';
+import { VNPayService } from 'src/orders/vn-pay.service';
 
 @Module({
   imports: [
@@ -92,6 +93,7 @@ import { UploadsController } from 'src/uploads/uploads.controller';
     OrderDetailsService,
     ReviewsService,
     UsersService,
+    VNPayService,
   ],
 })
 export class UsersApp {}
