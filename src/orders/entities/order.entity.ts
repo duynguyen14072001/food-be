@@ -54,7 +54,7 @@ export class Order {
 
   @Column({
     type: 'tinyint',
-    comment: '1-Thanh toán khi giao hàng, 2-Thanh toán online,',
+    comment: '1-Thanh toán khi giao hàng, 2-Thanh toán qua VNPay  ',
   })
   @AutoMap()
   payment_method: number;

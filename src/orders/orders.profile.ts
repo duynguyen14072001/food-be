@@ -29,10 +29,7 @@ export class OrdersProfile extends AutomapperProfile {
         forMember(
           (d) => d.total_price,
           mapFrom((e) =>
-            e.orderDetails.reduce(
-              (total, item) => total + item.quantity * item.amount,
-              0,
-            ),
+            e.orderDetails.reduce((total, item) => total + item.amount, 0),
           ),
         ),
       );

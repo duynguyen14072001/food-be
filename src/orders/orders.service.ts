@@ -94,7 +94,7 @@ export class OrdersService {
       await this.orderDetailsService.create(dataDetail);
 
       await queryRunner.commitTransaction();
-      return true;
+      return data;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new Error(error.message);

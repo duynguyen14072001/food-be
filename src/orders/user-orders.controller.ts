@@ -70,4 +70,14 @@ export class UserOrdersController {
   async createVNPayUrl(@Body() createVNPayDto: CreateVNPayDto) {
     return await this.vnPayService.createVNPayUrl(createVNPayDto);
   }
+
+  @Post('verify_vn_pay')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  async verifyVNPayUrl(@Body() query: any) {
+    return await this.vnPayService.verifyPaymentVNPay(query);
+  }
 }
