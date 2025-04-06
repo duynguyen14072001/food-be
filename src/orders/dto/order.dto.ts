@@ -32,13 +32,11 @@ export class OrderDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
-  @Transform(({ value }) => dayjs(new Date(value)).format('YYYY-MM-DD'))
-  order_date: Date;
+  expected_delivery_time: Date;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
-  @Transform(({ value }) => dayjs(new Date(value)).format('YYYY-MM-DD'))
   created_at: Date;
 
   @AutoMap()

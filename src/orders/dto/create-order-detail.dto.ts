@@ -9,6 +9,7 @@ export class CreateOrderDetailListDto {
   @ApiProperty()
   orders: CreateOrderDetailDto[];
   shipping_address: string;
+  place_id: string;
   note: string;
   payment_method: number;
 }

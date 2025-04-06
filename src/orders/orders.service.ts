@@ -13,9 +13,14 @@ import { ResponseList } from './dto/order.res';
 import { OrderDto } from './dto/order.dto';
 import { CreateOrderDetailListDto } from './dto/create-order-detail.dto';
 import { OrderDetailsService } from './order-details.service';
-import { STATUS_PENDING, UNPAID_STATUS } from 'src/constants';
+import {
+  PLACE_ID_BASE_LOCATION,
+  STATUS_PENDING,
+  UNPAID_STATUS,
+} from 'src/constants';
 import { UpdateStatusOrderDto } from './dto/update-status-order.dto';
 import { UpdateStatusPaymentOrderDto } from './dto/update-status-payment-order.dto';
+import { MapsService } from 'src/maps/maps.service';
 
 @Injectable()
 export class OrdersService {
@@ -25,6 +30,7 @@ export class OrdersService {
     @InjectMapper() private readonly classMapper: Mapper,
     private dataSource: DataSource,
     private orderDetailsService: OrderDetailsService,
+    private mapsService: MapsService,
   ) {}
 
   async mapOptions(query: any, user: any = null) {
@@ -75,15 +81,20 @@ export class OrdersService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const { shipping_address, note, orders, payment_method } =
+      const { shipping_address, note, orders, payment_method, place_id } =
         createOrderDetailListDto;
 
+      const expected_delivery_time = await this.mapsService.getTravelTime(
+        PLACE_ID_BASE_LOCATION,
+        place_id,
+      );
       // Insert order
       const createOrder = this.orderRepository.create({
         user_id: req.user.id,
         status: STATUS_PENDING,
         shipping_address,
         note,
+        expected_delivery_time,
         payment_method,
         payment_status: UNPAID_STATUS,
       });

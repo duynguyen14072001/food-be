@@ -40,6 +40,8 @@ import { UsersService } from './users/users.service';
 import { User } from './users/entities/user.entity';
 import { UploadsController } from 'src/uploads/uploads.controller';
 import { VNPayService } from 'src/orders/vn-pay.service';
+import { HttpModule } from '@nestjs/axios';
+import { MapsService } from 'src/maps/maps.service';
 
 @Module({
   imports: [
@@ -58,6 +60,7 @@ import { VNPayService } from 'src/orders/vn-pay.service';
       Review,
     ]),
     AuthModule,
+    HttpModule,
     RouterModule.register([
       {
         path: 'users',
@@ -94,6 +97,7 @@ import { VNPayService } from 'src/orders/vn-pay.service';
     ReviewsService,
     UsersService,
     VNPayService,
+    MapsService,
   ],
 })
 export class UsersApp {}

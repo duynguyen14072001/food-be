@@ -50,7 +50,7 @@ export class Order {
 
   @Column({ type: 'timestamp', nullable: true })
   @AutoMap()
-  order_date: Date;
+  expected_delivery_time: Date;
 
   @Column({
     type: 'tinyint',

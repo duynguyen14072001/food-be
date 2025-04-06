@@ -40,6 +40,8 @@ import { ProductImagesService } from 'src/products/product-images.service';
 import { ProductImages } from 'src/products/entities/product-images.entity';
 import { OrderDetailsService } from 'src/orders/order-details.service';
 import { UploadsController } from 'src/uploads/uploads.controller';
+import { MapsService } from 'src/maps/maps.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -57,6 +59,7 @@ import { UploadsController } from 'src/uploads/uploads.controller';
       Recommend,
     ]),
     AuthModule,
+    HttpModule,
     RouterModule.register([
       {
         path: 'admins',
@@ -94,6 +97,7 @@ import { UploadsController } from 'src/uploads/uploads.controller';
     FaqsProfile,
     FaqsService,
     RecommendsService,
+    MapsService,
   ],
 })
 export class AdminsApp {}
