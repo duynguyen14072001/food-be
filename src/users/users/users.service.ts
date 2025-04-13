@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { MailService } from '../../mailers/mailers.service';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
@@ -30,6 +30,14 @@ export class UsersService {
       order: orderMap,
       where: {},
     };
+
+    if (search) {
+      options.where = [
+        { name: Like(`%${search}%`) },
+        { mail_address: Like(`%${search}%`) },
+      ];
+    }
+
     if (!all && page && per_page) {
       options['skip'] = (page - 1) * per_page;
       options['take'] = per_page;

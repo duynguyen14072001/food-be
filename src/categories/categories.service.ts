@@ -8,12 +8,14 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { ResponseList } from './dto/category.res';
 import { CategoryDto } from './dto/category.dto';
+import { ProductCategoryService } from 'src/products/product-category.service';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+    private productCategoryService: ProductCategoryService,
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
 
@@ -99,6 +101,7 @@ export class CategoriesService {
 
   async remove(ids: number[] | number) {
     try {
+      await this.productCategoryService.removeByCategory(ids);
       return await this.categoryRepository.delete(ids);
     } catch (error) {
       throw new Error(error.message);

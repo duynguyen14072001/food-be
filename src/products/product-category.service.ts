@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductCategory } from './entities/product-category.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class ProductCategoryService {
@@ -70,6 +70,18 @@ export class ProductCategoryService {
   async remove(ids: number[] | number) {
     try {
       return await this.productCategoryRepository.delete(ids);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async removeByCategory(categoryIds: number[] | number) {
+    try {
+      const whereCondition = Array.isArray(categoryIds)
+        ? { category_id: In(categoryIds) }
+        : { category_id: categoryIds };
+
+      return await this.productCategoryRepository.delete(whereCondition);
     } catch (error) {
       throw new Error(error.message);
     }

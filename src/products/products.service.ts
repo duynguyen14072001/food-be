@@ -39,10 +39,24 @@ export class ProductsService {
       },
     };
 
+    let ids: number[] = [];
+
     if (search) {
+      const matchedProducts = await this.productRepository
+        .createQueryBuilder('product')
+        .leftJoin('product.productCategories', 'productCategory')
+        .leftJoin('productCategory.category', 'category')
+        .where('product.name LIKE :search OR category.name LIKE :search', {
+          search: `%${search}%`,
+        })
+        .select('product.id')
+        .getMany();
+
+      ids = matchedProducts.map((p) => p.id);
+
       options.where = {
         ...options.where,
-        name: Like(`%${search}%`),
+        id: In(ids),
       };
     }
 
