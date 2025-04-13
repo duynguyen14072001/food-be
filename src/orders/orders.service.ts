@@ -161,6 +161,33 @@ export class OrdersService {
     }
   }
 
+  async findOneByIDHaveMapper(id: number, req: any): Promise<any> {
+    try {
+      const data = (await this.orderRepository.findOne({
+        where: { id },
+        relations: {
+          user: true,
+          orderDetails: {
+            product: true,
+          },
+        },
+      })) as any;
+
+      if (data.user_id !== req.user.id) {
+        throw new ForbiddenException(`No permission`);
+      }
+
+      if (!data) {
+        throw new NotFoundException(`Could not find Order with id: ${id}`);
+      }
+      const result = await this.classMapper.mapAsync(data, Order, OrderDto);
+      data.total_price = result.total_price;
+      return data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async findAllByUser(query: any, req: any): Promise<ResponseList> {
     try {
       const { page, per_page: perPage } = query;

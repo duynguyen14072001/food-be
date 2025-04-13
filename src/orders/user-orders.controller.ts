@@ -61,6 +61,16 @@ export class UserOrdersController {
     return await this.ordersService.findOneByID(+id, req);
   }
 
+  @Get('return/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  async detailReturn(@Request() req, @Param('id') id: string) {
+    return await this.ordersService.findOneByIDHaveMapper(+id, req);
+  }
+
   @Post('create_vn_pay_url')
   @HttpCode(HttpStatus.OK)
   @ApiUnauthorizedResponse()
