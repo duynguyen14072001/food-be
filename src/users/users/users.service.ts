@@ -1,15 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
-import { MailService } from '../../mailers/mailers.service';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { UserDto } from './dto/user.dto';
 import { ResponseList } from './dto/user.res';
 import { IMAGE_URL_USER_DEFAULT } from 'src/constants';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class UsersService {
@@ -49,6 +48,7 @@ export class UsersService {
     try {
       const dataCreate = {
         ...createUserDto,
+        password: await argon2.hash(createUserDto.password),
         image_url: IMAGE_URL_USER_DEFAULT,
       };
       const createData = this.userRepository.create(dataCreate);
