@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -51,6 +55,10 @@ export class UsersService {
         password: await argon2.hash(createUserDto.password),
         image_url: IMAGE_URL_USER_DEFAULT,
       };
+      const user = await this.findOneByEmail(createUserDto.mail_address);
+      if (user) {
+        throw new UnprocessableEntityException('Email exits');
+      }
       const createData = this.userRepository.create(dataCreate);
       const data = await this.userRepository.save(createData);
 
