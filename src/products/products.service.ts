@@ -1,5 +1,9 @@
 import { ProductCategoryService } from './product-category.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -94,6 +98,12 @@ export class ProductsService {
       const { category_id, image_urls, ...createData } = createProductDto;
 
       // Insert product
+      const slug = await this.productRepository.findOne({
+        where: { slug: Equal(createData.slug) },
+      });
+      if (slug) {
+        throw new UnprocessableEntityException('Slug exits');
+      }
       const createProduct = this.productRepository.create(createData);
       const data = await this.productRepository.save(createProduct);
 
@@ -278,6 +288,12 @@ export class ProductsService {
       const { category_id, image_urls, ...updateData } = updateProductDto;
 
       // Update product
+      const productSlug = await this.productRepository.findOne({
+        where: { slug: Equal(updateData.slug) },
+      });
+      if (productSlug.id === id) {
+        throw new UnprocessableEntityException('Slug exits');
+      }
       const newData = await this.productRepository.create({ ...updateData });
       await this.productRepository.update({ id }, newData);
 
