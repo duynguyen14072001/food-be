@@ -46,7 +46,6 @@ export class ProductsService {
     let ids: number[] = [];
 
     if (search) {
-      console.log('1 :>> ', 1);
       const matchedProducts = await this.productRepository
         .createQueryBuilder('product')
         .leftJoin('product.productCategories', 'productCategory')
@@ -69,13 +68,21 @@ export class ProductsService {
       const filterList = filters.filter((item) => item.data);
       for (const i of filterList) {
         const { key, data } = i;
-        if (key === 'not_ids') {
-          const filteredIds = ids.filter((id) => !data.includes(id));
+        if (key === 'not_ids' && search) {
+          ids = ids.filter((id) => !data.includes(id));
           options.where = {
             ...options.where,
-            id: In(filteredIds),
+            id: In(ids),
           };
         }
+
+        if (key === 'not_ids' && !search){
+          options.where = {
+            ...options.where,
+            id: Not(In(ids)),
+          };
+        }
+
         if (key === 'show_flag') {
           options.where = {
             ...options.where,
